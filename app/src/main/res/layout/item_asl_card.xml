@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="300dp"
+    android:layout_height="160dp"
+    android:layout_marginLeft="5dp"
+    android:layout_marginTop="5dp"
+    android:elevation="5dp"
+    app:cardBackgroundColor="#00FFFFFF"
+    app:cardElevation="10dp"
+    app:layout_scrollEffect="compress">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clCard"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="5dp"
+        android:background="#3A9E76">
+
+        <TextView
+            android:id="@+id/tvNameAsl"
+            android:layout_width="299dp"
+            android:layout_height="77dp"
+            android:fontFamily="sans-serif-smallcaps"
+            android:gravity="start"
+            android:singleLine="false"
+            android:text="Блинчики"
+            android:textColor="#000000"
+            android:textSize="34sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/tvPrice"
+            android:layout_width="226dp"
+            android:layout_height="65dp"
+            android:fontFamily="sans-serif"
+            android:gravity="center"
+            android:text="150,50"
+            android:textColor="#000000"
+            android:textSize="50dp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvNameAsl"
+            app:layout_constraintVertical_bias="0.0" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

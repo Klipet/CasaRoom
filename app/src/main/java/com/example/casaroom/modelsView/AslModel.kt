@@ -3,6 +3,7 @@ package com.example.casaroom.modelsView
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.example.casaroom.clases.BonRegisterActivity
 import com.example.casaroom.clases.StartActivity
@@ -83,5 +84,8 @@ class AslModel(private val db: DataBaseRoom, private val context: Context):ViewM
             }
 
         }
+    }
+    fun getAslModel(): LiveData<List<AsortimentDB>>{
+        return db.DaoAssortiment().getAsl()
     }
 }

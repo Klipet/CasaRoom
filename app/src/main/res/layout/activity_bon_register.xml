@@ -4,6 +4,139 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#DCDADA"
     tools:context=".clases.BonRegisterActivity">
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fbReturn"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="5dp"
+        android:layout_weight="1"
+        android:clickable="true"
+        android:tint="#FEFEFE"
+        app:backgroundTint="#DCDADA"
+        app:fabSize="auto"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:maxImageSize="70dp"
+        app:srcCompat="@android:drawable/ic_media_rew"
+        app:useCompatPadding="false" />
+
+    <TextView
+        android:id="@+id/tvNamberBon"
+        android:layout_width="312dp"
+        android:layout_height="65dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="5dp"
+        android:layout_weight="1"
+        android:text="Чек №5"
+        android:textSize="50sp"
+        app:layout_constraintStart_toEndOf="@+id/fbReturn"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvNameCasa"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_weight="1"
+        android:text="Василий Пупкин"
+        android:textSize="50sp"
+        app:layout_constraintEnd_toStartOf="@+id/btSetting"
+        app:layout_constraintStart_toEndOf="@+id/tvNamberBon"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btSetting"
+        style="@android:style/Widget.DeviceDefault.Button.Inset"
+        android:layout_width="455dp"
+        android:layout_height="66dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="5dp"
+        android:layout_weight="1"
+        android:fontFamily="sans-serif"
+        android:insetLeft="5dp"
+        android:text="Администрирование"
+        android:textAlignment="center"
+        android:textSize="34sp"
+        android:textStyle="bold"
+        android:typeface="sans"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btOplata"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="400dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginBottom="15dp"
+        android:autoText="true"
+        android:background="#2ABD4F"
+        android:backgroundTint="#2ABC4F"
+        android:fontFamily="serif"
+        android:gravity="center"
+        android:lineSpacingExtra="24sp"
+        android:text="Оплата"
+        android:textAlignment="center"
+        android:textColor="#FFFEFE"
+        android:textColorHighlight="#138E23"
+        android:textColorLink="#16A145"
+        android:textSize="50sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:strokeColor="#D60E0E" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="Список Товаров"
+        android:textAlignment="center"
+        android:textSize="34sp"
+        android:textStyle="italic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/tvNameCasa"
+        app:layout_constraintTop_toBottomOf="@+id/tvNameCasa" />
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabfolder"
+        android:layout_width="0dp"
+        android:layout_height="80dp"
+        android:layout_marginBottom="15dp"
+        android:background="#DCDADA"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/btOplata"
+        app:tabMode="auto" />
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/vpAsl"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="15dp"
+        app:layout_constraintBottom_toTopOf="@+id/tabfolder"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/btOplata"
+        app:layout_constraintTop_toBottomOf="@+id/textView4"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/vpBonList"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/tabfolder"
+        app:layout_constraintEnd_toEndOf="@+id/btOplata"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvNamberBon" />
+
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

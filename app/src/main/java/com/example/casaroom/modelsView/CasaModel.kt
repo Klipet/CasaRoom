@@ -40,4 +40,8 @@ class CasaModel(private  val db: DataBaseRoom): ViewModel() {
              }
          }
     }
+    suspend fun getCasa(): CasaDB{
+        val casaName = db.DaoCasa().getAllCasa()
+        return casaName
+    }
 }

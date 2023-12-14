@@ -1,5 +1,6 @@
 package com.example.casaroom.roomDB.dao_setting
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -12,5 +13,5 @@ interface DaoFolder {
     fun insertFolder(isFolder: List<IsFolderDB>)
 
     @Query("select * from folder")
-    fun getFolder(): List<IsFolderDB>
+    fun getFolder(): LiveData<List<IsFolderDB>>
 }

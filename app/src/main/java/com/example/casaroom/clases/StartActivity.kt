@@ -143,8 +143,4 @@ class StartActivity : AppCompatActivity() {
 
 
     }
-
-
-
-
 }
