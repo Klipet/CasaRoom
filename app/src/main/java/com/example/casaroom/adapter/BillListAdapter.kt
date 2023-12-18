@@ -10,10 +10,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.casaroom.R
 import com.example.casaroom.alert_dialog.AlertDialogAslToBill
 import com.example.casaroom.alert_dialog.AlertDialogListner
+import com.example.casaroom.databinding.BillItemBinding
 import com.example.casaroom.databinding.ItemAslCardBinding
 import com.example.casaroom.roomDB.assortiment.AsortimentDB
 
-class AslListAdapter: ListAdapter<AsortimentDB, AslListAdapter.Holder>(Compact()) {
+import com.example.casaroom.roomDB.bill.BillListDB
+
+class BillListAdapter(private  val alertDialogAslToBill: AlertDialogAslToBill):
+    ListAdapter<BillListDB, BillListAdapter.Holder>(Compact()), AlertDialogListner {
 
     private var alertDialogListner: AlertDialogListner? = null
 
@@ -21,14 +25,11 @@ class AslListAdapter: ListAdapter<AsortimentDB, AslListAdapter.Holder>(Compact()
         alertDialogListner = listener
     }
     class Holder(view: View):RecyclerView.ViewHolder(view){
-        private val binding = ItemAslCardBinding.bind(view)
-        fun bind(item: AsortimentDB) = with(binding) {
-            tvNameAsl.text = item.Name
-            tvPrice.text = String.format("%.2f", item.Price)
-            itemView.setOnClickListener {
-                showAlertDialog(item.Name.toString(), item.Price!!.toDouble(), item.ID, itemView.context)
-
-            }
+        private val binding = BillItemBinding.bind(view)
+        fun bind(item: BillListDB) = with(binding) {
+            tvItemName.text = item.aslName
+            tvItemQuan.text = String.format("%.2f", item.aslCouner)
+            tvItemSum.text = String.format("%.2f", item.aslSum)
         }
         private fun showAlertDialog(name: String, price: Double, idAsl: String, context: Context) {
             AlertDialogAslToBill(context).onCloc(name, price, idAsl, context)
@@ -37,12 +38,12 @@ class AslListAdapter: ListAdapter<AsortimentDB, AslListAdapter.Holder>(Compact()
 
 
 
-    class Compact: DiffUtil.ItemCallback<AsortimentDB>() {
-        override fun areItemsTheSame(oldItem: AsortimentDB, newItem: AsortimentDB): Boolean {
-            return oldItem.ID == newItem.ID
+    class Compact: DiffUtil.ItemCallback<BillListDB>() {
+        override fun areItemsTheSame(oldItem: BillListDB, newItem: BillListDB): Boolean {
+            return oldItem == newItem
         }
 
-        override fun areContentsTheSame(oldItem: AsortimentDB, newItem: AsortimentDB): Boolean {
+        override fun areContentsTheSame(oldItem: BillListDB, newItem: BillListDB): Boolean {
             return oldItem == newItem
         }
 
@@ -50,11 +51,15 @@ class AslListAdapter: ListAdapter<AsortimentDB, AslListAdapter.Holder>(Compact()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
-        return Holder(LayoutInflater.from(parent.context).inflate(R.layout.item_asl_card, parent, false))
+        return Holder(LayoutInflater.from(parent.context).inflate(R.layout.bill_item, parent, false))
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
        val item = getItem(position)
        holder.bind(item)
+    }
+
+    override fun onItemAddedBill(item: String, counter: Int, sum: Double) {
+
     }
 }

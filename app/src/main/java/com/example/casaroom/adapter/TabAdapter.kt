@@ -12,7 +12,7 @@ class TabAdapter(fm: FragmentActivity, private val tab: List<IsFolderDB>): Fragm
     }
 
     override fun createFragment(position: Int): Fragment {
-        val isFolder = tab[position].name
+        val isFolder = tab[position].IDAsl
         return AslListBlankFragment.newInstance(isFolder)
     }
 

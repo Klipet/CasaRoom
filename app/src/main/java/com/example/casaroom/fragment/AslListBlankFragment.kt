@@ -1,5 +1,6 @@
 package com.example.casaroom.fragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -11,13 +12,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.casaroom.R
 import com.example.casaroom.adapter.AslListAdapter
+import com.example.casaroom.alert_dialog.AlertDialogListner
 import com.example.casaroom.databinding.FragmentAslListBlankBinding
 import com.example.casaroom.modelsView.AslModel
 import com.example.casaroom.modelsView.AslModelList
 import com.example.casaroom.modelsView.ViewModelFactory
 import com.example.casaroom.roomDB.DataBaseRoom
 
-class AslListBlankFragment : Fragment() {
+class AslListBlankFragment : Fragment(), AlertDialogListner {
     private lateinit var adapterAsl: AslListAdapter
     private lateinit var dataBaseRoom: DataBaseRoom
     private lateinit var bindingAsl: FragmentAslListBlankBinding
@@ -26,9 +28,6 @@ class AslListBlankFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-
-        }
     }
 
     override fun onCreateView(
@@ -56,21 +55,27 @@ class AslListBlankFragment : Fragment() {
 
         }
     }
+    @SuppressLint("SuspiciousIndentation")
     fun init(){
         try {
             val aslModelList = ViewModelProvider(this@AslListBlankFragment, ViewModelFactory(
                 dataBaseRoom.DaoAssortiment(), requireArguments().getString(ARG_CATEGORY)!!
             )).get(AslModelList::class.java)
+
             adapterAsl = AslListAdapter()
             bindingAsl.rcAslList.layoutManager = GridLayoutManager(context, 3)
             bindingAsl.rcAslList.adapter = adapterAsl
-            aslModelList.aslData().observe(viewLifecycleOwner, Observer {
+                aslModelList.aslData().observe(viewLifecycleOwner, Observer {
+                Log.d("null data", it.size.toString())
                 adapterAsl.submitList(it)
             })
-
-
+            adapterAsl.setAlertDialogListener(this)
         }catch (e: Exception){
             Log.d("Error AslButon", e.message.toString())
         }
+    }
+
+    override fun onItemAddedBill(item: String, counter: Int, sum: Double) {
+        TODO("Not yet implemented")
     }
 }

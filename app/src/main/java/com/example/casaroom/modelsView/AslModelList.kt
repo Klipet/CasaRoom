@@ -7,7 +7,6 @@ import com.example.casaroom.roomDB.dao_setting.DaoAssortiment
 
 class AslModelList (private val dao: DaoAssortiment, private val parentID: String): ViewModel() {
     fun aslData(): LiveData<List<AsortimentDB>> {
-
         return dao.getAslParent(parentID)
     }
 }

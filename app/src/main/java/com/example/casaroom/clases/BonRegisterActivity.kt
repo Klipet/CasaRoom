@@ -2,6 +2,7 @@ package com.example.casaroom.clases
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.util.Log
 import androidx.lifecycle.Observer
 import androidx.viewpager2.widget.ViewPager2
@@ -62,7 +63,7 @@ class BonRegisterActivity : AppCompatActivity() {
                             tab, position ->
                         tab.text = it[position].name
                         val bundle = Bundle()
-                        bundle.putString("parentID", it[position].name)
+                        bundle.putString("parentID", it[position].IDAsl)
                         fragmentAsl.arguments = bundle
                     }.attach()
 
@@ -73,6 +74,10 @@ class BonRegisterActivity : AppCompatActivity() {
         }catch (e: Exception){
             Log.d("Error Tab", e.message.toString())
         }
+    }
+    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
+        supportFragmentManager.beginTransaction()
+        super.onCreate(savedInstanceState, persistentState)
     }
 
 }

@@ -6,7 +6,6 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.example.casaroom.clases.BonRegisterActivity
-import com.example.casaroom.clases.StartActivity
 import com.example.casaroom.db.assortiment.Assortment
 import com.example.casaroom.roomDB.DataBaseRoom
 import com.example.casaroom.roomDB.assortiment.AsortimentDB
@@ -21,19 +20,27 @@ class AslModel(private val db: DataBaseRoom, private val context: Context):ViewM
 
      fun aslInsert(aslList: List<Assortment>){
         CoroutineScope(Dispatchers.IO).launch {
+
             try {
                 val barcodes = aslList?.map {
-                    BarcodesDB(
-                        0, it.ID, it.Barcodes
-                    )
-                }
-                barcodes?.let { db.DaoCBarcodes().insertBarcodes(it) }
+                    BarcodesDB(0, it.ID, it.Barcodes)
+                    }
+                    barcodes?.let { db.DaoCBarcodes().insertBarcodes(it) }
+
+            }catch (e: Exception){
+                Log.d("Error Barcode Insert", e.message.toString())
+            }
+            try {
                 val isFolder = aslList.filter {
                     it.IsFolder == true
                 }.map {
                     IsFolderDB(it.ID,it.IsFolder, it.ParentID, it.Name)
                 }
                 db.DaoFolder().insertFolder(isFolder)
+            }catch (e: Exception){
+                Log.d("Error folder Insert", e.message.toString())
+            }
+            try {
                 val asortimentList = aslList.map {
                     val promo = it?.Promotions?.map {
                         PromoDB(
@@ -78,13 +85,15 @@ class AslModel(private val db: DataBaseRoom, private val context: Context):ViewM
                 context.startActivity(intent)
 
             }catch (e: Exception){
-                Log.d("ErrorAsortimentInsert", e.message.toString())
+                Log.d("ErrorAsortimentInsert and promo", e.message.toString())
             }finally {
 
             }
 
         }
     }
+
+
     fun getAslModel(): LiveData<List<AsortimentDB>>{
         return db.DaoAssortiment().getAsl()
     }
