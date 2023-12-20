@@ -7,10 +7,11 @@ import android.widget.TextView
 import androidx.constraintlayout.utils.widget.ImageFilterView
 import com.example.casaroom.R
 import com.example.casaroom.roomDB.DataBaseRoom
-import com.example.casaroom.roomDB.bill.BillList
+import com.example.casaroom.roomDB.bill.BillListDB
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class AlertDialogAslToBill(private val context: Context) {
     private lateinit var db: DataBaseRoom
@@ -59,7 +60,7 @@ class AlertDialogAslToBill(private val context: Context) {
             // Вы можете добавить здесь код, который нужно выполнить при нажатии на эту кнопку
             //  listner.onItemAdded(item, counter, sum)
             CoroutineScope(Dispatchers.IO).launch {
-                val billList = BillList(0, aslUid = idAsl, aslName = item, aslPrice = priceItem, aslCouner = counter, aslSum = sum)
+                val billList = BillListDB(0, aslUid = idAsl, aslName = item, aslPrice = priceItem, aslCouner = counter, aslSum = sum)
                 db.DaoBillList().insertBillList(billList)
             }
 
@@ -71,4 +72,5 @@ class AlertDialogAslToBill(private val context: Context) {
         val alertDialogCreate = alertDialog.create()
         alertDialogCreate.show()
     }
+
 }

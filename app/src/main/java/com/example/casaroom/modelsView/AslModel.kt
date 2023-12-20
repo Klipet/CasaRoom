@@ -97,4 +97,5 @@ class AslModel(private val db: DataBaseRoom, private val context: Context):ViewM
     fun getAslModel(): LiveData<List<AsortimentDB>>{
         return db.DaoAssortiment().getAsl()
     }
+
 }

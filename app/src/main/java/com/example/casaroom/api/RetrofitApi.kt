@@ -24,5 +24,5 @@ interface RetrofitApi {
     @GET("/epos/json/GetWorkPlaces")
     fun getPlace(@Query("Token")token: String): Call<WorkSpace>
     @GET("/epos/json/GetWorkplaceSettings")
-    suspend fun getWorkplace(@Query("Token")token: String, @Query("WorkplaceId")casa: String): SettingWorkSpace
+    suspend fun getSetingWP(@Query("Token")token: String, @Query("WorkplaceId")casa: String): SettingWorkSpace
 }

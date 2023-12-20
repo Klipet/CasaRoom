@@ -16,7 +16,7 @@ import com.example.casaroom.roomDB.assortiment.AsortimentDB
 
 import com.example.casaroom.roomDB.bill.BillListDB
 
-class BillListAdapter(private  val alertDialogAslToBill: AlertDialogAslToBill):
+class BillListAdapter():
     ListAdapter<BillListDB, BillListAdapter.Holder>(Compact()), AlertDialogListner {
 
     private var alertDialogListner: AlertDialogListner? = null
@@ -28,12 +28,10 @@ class BillListAdapter(private  val alertDialogAslToBill: AlertDialogAslToBill):
         private val binding = BillItemBinding.bind(view)
         fun bind(item: BillListDB) = with(binding) {
             tvItemName.text = item.aslName
-            tvItemQuan.text = String.format("%.2f", item.aslCouner)
-            tvItemSum.text = String.format("%.2f", item.aslSum)
+            tvItemQuan.text = item.aslCouner.toString()
+            tvItemSum.text = item.aslSum.toString()
         }
-        private fun showAlertDialog(name: String, price: Double, idAsl: String, context: Context) {
-            AlertDialogAslToBill(context).onCloc(name, price, idAsl, context)
-        }
+
     }
 
 

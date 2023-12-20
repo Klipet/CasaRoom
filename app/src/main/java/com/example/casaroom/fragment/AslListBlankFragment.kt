@@ -10,11 +10,9 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
-import com.example.casaroom.R
 import com.example.casaroom.adapter.AslListAdapter
 import com.example.casaroom.alert_dialog.AlertDialogListner
 import com.example.casaroom.databinding.FragmentAslListBlankBinding
-import com.example.casaroom.modelsView.AslModel
 import com.example.casaroom.modelsView.AslModelList
 import com.example.casaroom.modelsView.ViewModelFactory
 import com.example.casaroom.roomDB.DataBaseRoom

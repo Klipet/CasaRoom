@@ -1,22 +1,33 @@
 package com.example.casaroom.clases
 
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.util.Log
+import android.view.View
 import androidx.lifecycle.Observer
 import androidx.viewpager2.widget.ViewPager2
 import com.example.casaroom.R
 import com.example.casaroom.adapter.TabAdapter
+import com.example.casaroom.alert_dialog.AlertDialogAslToBill
+import com.example.casaroom.alert_dialog.AlertDialogListner
+import com.example.casaroom.alert_dialog.AlertDialogPayType
+import com.example.casaroom.api.API
+import com.example.casaroom.api.RetrofitApi
+import com.example.casaroom.constant.Constant
 import com.example.casaroom.databinding.ActivityBonRegisterBinding
 import com.example.casaroom.fragment.AslListBlankFragment
+import com.example.casaroom.fragment.BonListFragment
 import com.example.casaroom.modelsView.CasaModel
 import com.example.casaroom.modelsView.ParentView
+import com.example.casaroom.modelsView.SetingModel
 import com.example.casaroom.roomDB.DataBaseRoom
 import com.google.android.material.tabs.TabLayoutMediator
-import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -27,15 +38,30 @@ class BonRegisterActivity : AppCompatActivity() {
     private lateinit var folderTab: TabAdapter
     private lateinit var mvCasa: CasaModel
     private lateinit var parentList: ParentView
+    private lateinit var setingModel: SetingModel
+    private lateinit var sh: SharedPreferences
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         bindingBon = ActivityBonRegisterBinding.inflate(layoutInflater)
         //setContentView(R.layout.activity_bon_register)
         setContentView(bindingBon.root)
         db = DataBaseRoom.getDB(applicationContext)
+        sh = getSharedPreferences("PREFERENSES", MODE_PRIVATE)
+        fragmentBillList()
         getCasaName()
         tabList()
+        insertSeting()
     }
+
+    private fun fragmentBillList() {
+        val fragmentMenager = supportFragmentManager
+        val fragmentTransaction = fragmentMenager.beginTransaction()
+        val billfragment = BonListFragment()
+        fragmentTransaction.replace(R.id.viewBillList, billfragment)
+        fragmentTransaction.addToBackStack(null)
+        fragmentTransaction.commit()
+    }
+
     fun getCasaName(){
         mvCasa = CasaModel(db)
         GlobalScope.launch {
@@ -75,9 +101,38 @@ class BonRegisterActivity : AppCompatActivity() {
             Log.d("Error Tab", e.message.toString())
         }
     }
+
+    private fun insertSeting(){
+        setingModel = SetingModel(db)
+        val token = sh.getString(Constant.TOKEN, "non")
+        CoroutineScope(Dispatchers.IO).launch {
+            val casa = db.DaoCasa().getAllCasa().casaID
+            val response = API.api.getSetingWP(token.toString(), casa)
+            val getWorkplacesResult = response.GetWorkplaceSettingsResult
+            setingModel.insertseting(getWorkplacesResult.FiscalDevice, getWorkplacesResult.PaymentTypes)
+        }
+
+    }
+    fun payplay(view: View) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val getPayType = db.DaoSetingWSP().selectPayment()
+            withContext(Dispatchers.Main){
+                view.setOnClickListener {
+                    val dialog = AlertDialogPayType(this@BonRegisterActivity)
+                    dialog.paiment(getPayType)
+                }
+            }
+
+        }
+
+    }
+
     override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
         supportFragmentManager.beginTransaction()
         super.onCreate(savedInstanceState, persistentState)
     }
+
+
+
 
 }

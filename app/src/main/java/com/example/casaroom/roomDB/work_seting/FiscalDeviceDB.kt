@@ -6,8 +6,6 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "fiscal_device")
 data class FiscalDeviceDB(
-    @ColumnInfo("parametrs")
-    var parametrs: String?,
     @PrimaryKey(autoGenerate = false)
     var model: Int,
     @ColumnInfo("name")
