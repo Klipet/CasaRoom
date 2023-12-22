@@ -1,5 +1,6 @@
 package com.example.casaroom.roomDB.dao_setting
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -17,7 +18,7 @@ interface DaoSetingWSP {
     fun insertPayment(paymentTypeDB: List<PaymentTypeDB>)
 
     @Query("select * from payment_type")
-    fun selectPayment(): List<PaymentTypeDB>
+    fun selectPayment(): LiveData<List<PaymentTypeDB>>
     @Query("select * from fiscal_device")
     fun selectFiscalDevice(): FiscalDeviceDB
 }

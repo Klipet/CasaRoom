@@ -7,6 +7,7 @@ import android.os.PersistableBundle
 import android.util.Log
 import android.view.View
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.example.casaroom.R
 import com.example.casaroom.adapter.TabAdapter
@@ -19,6 +20,7 @@ import com.example.casaroom.constant.Constant
 import com.example.casaroom.databinding.ActivityBonRegisterBinding
 import com.example.casaroom.fragment.AslListBlankFragment
 import com.example.casaroom.fragment.BonListFragment
+import com.example.casaroom.modelsView.BillModel
 import com.example.casaroom.modelsView.CasaModel
 import com.example.casaroom.modelsView.ParentView
 import com.example.casaroom.modelsView.SetingModel
@@ -51,6 +53,7 @@ class BonRegisterActivity : AppCompatActivity() {
         getCasaName()
         tabList()
         insertSeting()
+        payplay()
     }
 
     private fun fragmentBillList() {
@@ -113,18 +116,18 @@ class BonRegisterActivity : AppCompatActivity() {
         }
 
     }
-    fun payplay(view: View) {
-        CoroutineScope(Dispatchers.IO).launch {
-            val getPayType = db.DaoSetingWSP().selectPayment()
-            withContext(Dispatchers.Main){
-                view.setOnClickListener {
-                    val dialog = AlertDialogPayType(this@BonRegisterActivity)
-                    dialog.paiment(getPayType)
-                }
-            }
-
+    fun payplay() = with (bindingBon) {
+        val payType = SetingModel(db)
+        val billSum = BillModel(db)
+         btOplata.setOnClickListener {
+            val dialog = AlertDialogPayType(this@BonRegisterActivity)
+            billSum.getSumBill().observe(this@BonRegisterActivity, Observer { sum ->
+                 payType.payType().observe(this@BonRegisterActivity, Observer {
+                     dialog.paiment(it, sum!!)
+                     dialog.show()
+                })
+            })
         }
-
     }
 
     override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
@@ -136,3 +139,4 @@ class BonRegisterActivity : AppCompatActivity() {
 
 
 }
+

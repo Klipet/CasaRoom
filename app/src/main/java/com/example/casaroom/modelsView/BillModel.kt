@@ -14,7 +14,7 @@ class BillModel(private val db: DataBaseRoom): ViewModel() {
     fun getBill(): LiveData<List<BillListDB>> {
               return db.DaoBillList().selectBillList()
     }
-    fun getSumBill(): Double{
+    fun getSumBill(): LiveData<Double>{
         return db.DaoBillList().getSumBill()
     }
 

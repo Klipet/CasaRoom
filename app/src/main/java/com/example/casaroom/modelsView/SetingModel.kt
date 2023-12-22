@@ -2,6 +2,7 @@ package com.example.casaroom.modelsView
 
 import android.content.Context
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.example.casaroom.db.seting_workspace.FiscalDevice
 import com.example.casaroom.db.seting_workspace.PaymentType
@@ -46,9 +47,7 @@ class SetingModel(private val db: DataBaseRoom): ViewModel() {
             }
         }
     }
-    fun payType(){
-        CoroutineScope(Dispatchers.IO).launch {
-            db.DaoSetingWSP().selectFiscalDevice()
-        }
+    fun payType(): LiveData<List<PaymentTypeDB>>{
+        return db.DaoSetingWSP().selectPayment()
     }
 }

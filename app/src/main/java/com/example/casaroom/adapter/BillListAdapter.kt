@@ -16,8 +16,7 @@ import com.example.casaroom.roomDB.assortiment.AsortimentDB
 
 import com.example.casaroom.roomDB.bill.BillListDB
 
-class BillListAdapter():
-    ListAdapter<BillListDB, BillListAdapter.Holder>(Compact()), AlertDialogListner {
+class BillListAdapter(): ListAdapter<BillListDB, BillListAdapter.Holder>(Compact()), AlertDialogListner {
 
     private var alertDialogListner: AlertDialogListner? = null
 
