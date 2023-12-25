@@ -1,6 +1,6 @@
 package com.example.casaroom.api
 
-import com.example.casaroom.constant.Constant.Companion.BASE_URL
+import com.example.casaroom.constant.Constant
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -8,8 +8,7 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
-class API {
-
+class ApiFiscal {
     companion object {
         val retrofit by lazy {
             val logging = HttpLoggingInterceptor()
@@ -19,7 +18,7 @@ class API {
                 .addInterceptor(logging)
                 .build()
             Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(Constant.FISCAL_DEVICE)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .client(client)
@@ -29,5 +28,4 @@ class API {
             retrofit.create(RetrofitApi::class.java)
         }
     }
-
 }

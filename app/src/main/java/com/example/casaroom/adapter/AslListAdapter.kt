@@ -26,12 +26,13 @@ class AslListAdapter: ListAdapter<AsortimentDB, AslListAdapter.Holder>(Compact()
             tvNameAsl.text = item.Name
             tvPrice.text = String.format("%.2f", item.Price)
             itemView.setOnClickListener {
-                showAlertDialog(item.Name.toString(), item.Price!!.toDouble(), item.ID, itemView.context)
+                showAlertDialog(item.Name.toString(), item.Price!!.toDouble(),
+                    item.ID, item.VATQuote.toString(), item.Unit.toString(), itemView.context)
 
             }
         }
-        private fun showAlertDialog(name: String, price: Double, idAsl: String, context: Context) {
-            AlertDialogAslToBill(context).onCloc(name, price, idAsl, context)
+        private fun showAlertDialog(item: String, priceItem: Double, idAsl: String, tva: String, unit: String, context: Context) {
+            AlertDialogAslToBill(context).onCloc(item, priceItem, idAsl,tva, unit, context)
         }
     }
 

@@ -26,14 +26,14 @@ class AlertDialogAslToBill(private val context: Context) {
     val minusButton: ImageFilterView = dialogView.findViewById(R.id.imageMin)
     val price: TextView = dialogView.findViewById(R.id.tv_item_price)
 
-    fun onCloc(item: String, priceItem: Double, idAsl: String, context: Context) {
+    fun onCloc(item: String, priceItem: Double, idAsl: String, tva: String, unit: String, context: Context) {
         db = DataBaseRoom.getDB(context)
 
         alertDialog.setView(dialogView)
         name.text = item
         price.text = String.format("%.2f", priceItem)
         sumPrice.text = String.format("%.2f", priceItem)
-        var counter = 1
+        var counter = 1.0
         counterText.text = counter.toString()
         var sum = priceItem
         plusButton.setOnClickListener {
@@ -46,7 +46,7 @@ class AlertDialogAslToBill(private val context: Context) {
         }
         minusButton.setOnClickListener {
             // Действие при нажатии на кнопку "Минус"
-            if (counter > 1){
+            if (counter > 1.0){
                 counter--
                 counterText.text = counter.toString()
                 sum = priceItem * counter
@@ -60,7 +60,17 @@ class AlertDialogAslToBill(private val context: Context) {
             // Вы можете добавить здесь код, который нужно выполнить при нажатии на эту кнопку
             //  listner.onItemAdded(item, counter, sum)
             CoroutineScope(Dispatchers.IO).launch {
-                val billList = BillListDB(0, aslUid = idAsl, aslName = item, aslPrice = priceItem, aslCouner = counter, aslSum = sum)
+                val billList = BillListDB(
+                    0,
+                    aslUid = idAsl,
+                    aslName = item,
+                    aslPrice = priceItem,
+                    aslCouner = counter,
+                    aslSum = sum,
+                    aslunitCode = "",
+                    aslVAT = tva.toString(),
+                    aslunitName = unit
+                )
                 db.DaoBillList().insertBillList(billList)
             }
 

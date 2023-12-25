@@ -33,11 +33,11 @@
             app:layout_constraintTop_toTopOf="@+id/textView" />
 
         <TextView
-            android:id="@+id/textView5"
+            android:id="@+id/tvSdacea"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
-            android:text="Оплочено"
+            android:text="Остаток"
             android:textSize="25dp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@+id/textView"
@@ -61,8 +61,8 @@
             android:text="полученно от клиента"
             android:textSize="25dp"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/textView5"
-            app:layout_constraintTop_toBottomOf="@+id/textView5" />
+            app:layout_constraintStart_toStartOf="@+id/tvSdacea"
+            app:layout_constraintTop_toBottomOf="@+id/tvSdacea" />
 
         <EditText
             android:id="@+id/edInployted"
@@ -70,7 +70,7 @@
             android:layout_height="52dp"
             android:layout_marginTop="-15dp"
             android:ems="10"
-            android:inputType="number"
+            android:inputType="number|numberDecimal"
             android:textSize="25dp"
             app:layout_constraintStart_toStartOf="@+id/tvRest"
             app:layout_constraintTop_toTopOf="@+id/textView7" />
@@ -82,7 +82,6 @@
             android:layout_marginTop="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView7"
             app:layout_constraintVertical_bias="0.01" />

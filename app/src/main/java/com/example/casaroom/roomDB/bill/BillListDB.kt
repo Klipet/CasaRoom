@@ -15,7 +15,14 @@ data class BillListDB(
     @ColumnInfo("aslPrice")
     var aslPrice: Double,
     @ColumnInfo("aslCounter")
-    var aslCouner: Int,
+    var aslCouner: Double,
     @ColumnInfo("aslSum")
-    var aslSum: Double
+    var aslSum: Double,
+    @ColumnInfo("VAT")
+    var aslVAT: String,
+    @ColumnInfo("unit_code")
+    var aslunitCode: String,
+    @ColumnInfo("unit_name")
+    var aslunitName: String
+
 )

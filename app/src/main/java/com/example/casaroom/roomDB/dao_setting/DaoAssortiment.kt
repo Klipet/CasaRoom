@@ -20,5 +20,5 @@ interface DaoAssortiment {
     fun getAslParent(parentID: String): LiveData<List<AsortimentDB>>
 
     @Query("Select * from assortiment where ID=:id")
-    fun getAslID(id: String): AsortimentDB
+    fun getAslID(id: String): List<AsortimentDB>
 }

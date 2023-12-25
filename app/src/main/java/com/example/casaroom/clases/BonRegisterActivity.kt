@@ -25,6 +25,8 @@ import com.example.casaroom.modelsView.CasaModel
 import com.example.casaroom.modelsView.ParentView
 import com.example.casaroom.modelsView.SetingModel
 import com.example.casaroom.roomDB.DataBaseRoom
+import com.example.casaroom.roomDB.bill.BillListDB
+import com.example.casaroom.roomDB.work_seting.PaymentTypeDB
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -117,17 +119,35 @@ class BonRegisterActivity : AppCompatActivity() {
 
     }
     fun payplay() = with (bindingBon) {
-        val payType = SetingModel(db)
-        val billSum = BillModel(db)
          btOplata.setOnClickListener {
             val dialog = AlertDialogPayType(this@BonRegisterActivity)
-            billSum.getSumBill().observe(this@BonRegisterActivity, Observer { sum ->
-                 payType.payType().observe(this@BonRegisterActivity, Observer {
-                     dialog.paiment(it, sum!!)
-                     dialog.show()
-                })
-            })
+             getBilssSum { sum ->
+                 getPayType { payment ->
+                     getBillAsl {
+                         dialog.paiment(payment!!, sum!!, it!!)
+                     }
+
+                 }
+            }
         }
+    }
+    private fun getBilssSum(callback: (Double?) -> Unit){
+        val billSum = BillModel(db)
+         billSum.getSumBill().observe(this, Observer { sum ->
+             callback(sum)
+        })
+    }
+    private fun getPayType(callback: (List<PaymentTypeDB>?) -> Unit){
+        val payType = SetingModel(db)
+        payType.payType().observe(this, Observer {
+            callback(it)
+        })
+    }
+    private fun getBillAsl(callback: (List<BillListDB>?) -> Unit){
+        val payType = BillModel(db)
+        payType.getBill().observe(this, Observer {
+            callback(it)
+        })
     }
 
     override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {

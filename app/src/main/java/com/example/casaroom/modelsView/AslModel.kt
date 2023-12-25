@@ -98,4 +98,8 @@ class AslModel(private val db: DataBaseRoom, private val context: Context):ViewM
         return db.DaoAssortiment().getAsl()
     }
 
+    fun getAslToBillList(aslID: String): List<AsortimentDB>{
+        return db.DaoAssortiment().getAslID(aslID)
+    }
+
 }
