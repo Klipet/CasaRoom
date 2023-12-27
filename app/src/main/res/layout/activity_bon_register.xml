@@ -42,7 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:layout_weight="1"
-        android:text="Василий Пупкин"
+        android:text="CasaName"
         android:textSize="50sp"
         app:layout_constraintEnd_toStartOf="@+id/btSetting"
         app:layout_constraintStart_toEndOf="@+id/tvNamberBon"
@@ -125,10 +125,10 @@
         android:layout_marginEnd="15dp"
         app:layout_constraintBottom_toTopOf="@+id/tabfolder"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/btOplata"
         app:layout_constraintTop_toBottomOf="@+id/textView4"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <FrameLayout
         android:id="@+id/viewBillList"
@@ -138,7 +138,20 @@
         app:layout_constraintBottom_toTopOf="@+id/btOplata"
         app:layout_constraintEnd_toStartOf="@+id/vpAsl"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fbReturn" />
+        app:layout_constraintTop_toBottomOf="@+id/fbReturn" >
+
+    </FrameLayout>
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/viewPayment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.42000002"
+        tools:visibility="gone" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

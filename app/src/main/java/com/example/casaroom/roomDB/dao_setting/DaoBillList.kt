@@ -17,5 +17,12 @@ interface DaoBillList {
     fun deleteBillList()
     @Query("select sum(aslSum) from bill_List")
     fun getSumBill(): LiveData<Double>
+    @Query("select sum(aslSum) from bill_List")
+    fun getSum(): Double
+
+    @Query("select sum(aslSum) from bill_List")
+    fun getBillSum(): Double
+    @Query("select * from bill_List")
+    fun aslBillList(): List<BillListDB>
 
 }

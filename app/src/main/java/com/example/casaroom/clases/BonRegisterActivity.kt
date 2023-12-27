@@ -3,6 +3,7 @@ package com.example.casaroom.clases
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.os.PersistableBundle
 import android.util.Log
 import android.view.View
@@ -20,6 +21,7 @@ import com.example.casaroom.constant.Constant
 import com.example.casaroom.databinding.ActivityBonRegisterBinding
 import com.example.casaroom.fragment.AslListBlankFragment
 import com.example.casaroom.fragment.BonListFragment
+import com.example.casaroom.fragment.PaymentFragment
 import com.example.casaroom.modelsView.BillModel
 import com.example.casaroom.modelsView.CasaModel
 import com.example.casaroom.modelsView.ParentView
@@ -51,11 +53,16 @@ class BonRegisterActivity : AppCompatActivity() {
         setContentView(bindingBon.root)
         db = DataBaseRoom.getDB(applicationContext)
         sh = getSharedPreferences("PREFERENSES", MODE_PRIVATE)
+        val handler = Handler()
+        val millis = 100
         fragmentBillList()
         getCasaName()
         tabList()
         insertSeting()
-        payplay()
+        val runn = Runnable {
+            payplay()
+        }
+        handler.postDelayed(runn, millis.toLong())
     }
 
     private fun fragmentBillList() {
@@ -120,6 +127,17 @@ class BonRegisterActivity : AppCompatActivity() {
     }
     fun payplay() = with (bindingBon) {
          btOplata.setOnClickListener {
+          //   if(viewPayment.visibility == View.VISIBLE){
+          //       val fragmentMenager = supportFragmentManager
+          //       val fragmentTransaction = fragmentMenager.beginTransaction()
+          //       val billfragment = PaymentFragment()
+          //       fragmentTransaction.replace(R.id.viewPayment, billfragment)
+          //       fragmentTransaction.addToBackStack(null)
+          //       fragmentTransaction.commit()
+          //   }else{
+          //       viewPayment.visibility  = View.VISIBLE
+          //   }
+
             val dialog = AlertDialogPayType(this@BonRegisterActivity)
              getBilssSum { sum ->
                  getPayType { payment ->

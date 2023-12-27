@@ -1,6 +1,5 @@
 package com.example.casaroom.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
 
 import android.view.View
@@ -9,23 +8,27 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.casaroom.R
-import com.example.casaroom.clases.RegisterBill
+import com.example.casaroom.alert_dialog.PaymentListener
 import com.example.casaroom.databinding.ItemPayButtonBinding
-import com.example.casaroom.modelsView.BillModel
-import com.example.casaroom.roomDB.bill.BillListDB
+import com.example.casaroom.modelsView.RegisterBillModel
 import com.example.casaroom.roomDB.work_seting.PaymentTypeDB
 
 class PayTypeButtonAdapter (): ListAdapter<PaymentTypeDB, PayTypeButtonAdapter.Holder>(CompactPay()) {
+
+
+
     class Holder(view: View): RecyclerView.ViewHolder(view) {
         private val binding = ItemPayButtonBinding.bind(view)
+        private var paymentEnteredListener: PaymentListener? = null
         fun bind(item: PaymentTypeDB?) {
-            binding.button2.text = item?.Name
+            binding.btPaymentName.text = item?.Name
             itemView.setOnClickListener {
-                RegisterBill(item!!)
+                RegisterBillModel().createRegisterFiscal(item!!.Code!!.toInt())
             }
         }
 
     }
+
     class CompactPay: DiffUtil.ItemCallback<PaymentTypeDB>() {
         override fun areItemsTheSame(oldItem: PaymentTypeDB, newItem: PaymentTypeDB): Boolean {
             return oldItem.ExternalId == newItem.ExternalId
@@ -47,6 +50,5 @@ class PayTypeButtonAdapter (): ListAdapter<PaymentTypeDB, PayTypeButtonAdapter.H
         val item = getItem(position)
         holder.bind(item)
     }
-
 
 }
