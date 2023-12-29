@@ -21,4 +21,6 @@ interface DaoSetingWSP {
     fun selectPayment(): LiveData<List<PaymentTypeDB>>
     @Query("select * from fiscal_device")
     fun selectFiscalDevice(): FiscalDeviceDB
+    @Query("select * from payment_type")
+    fun selectPaymentToDialog(): List<PaymentTypeDB>
 }

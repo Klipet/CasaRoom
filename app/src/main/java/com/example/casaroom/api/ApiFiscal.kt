@@ -25,7 +25,7 @@ class ApiFiscal {
                 .build()
         }
         val api by lazy {
-            retrofit.create(RetrofitApi::class.java)
+            retrofit.create(RetrofitApiFiscal::class.java)
         }
     }
 }

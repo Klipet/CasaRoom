@@ -12,10 +12,21 @@ import kotlinx.coroutines.withContext
 
 class BillModel(private val db: DataBaseRoom): ViewModel() {
     fun getBill(): LiveData<List<BillListDB>> {
-              return db.DaoBillList().selectBillList()
+        return db.DaoBillList().aslBillList()
     }
     fun getSumBill(): LiveData<Double>{
         return db.DaoBillList().getSumBill()
+    }
+    fun getBillSumToDialog(): Double{
+        return db.DaoBillList().getBillSum()
+    }
+    fun getBillToDialog(): List<BillListDB> {
+        return db.DaoBillList().selectBillList()
+    }
+    fun deleteBill(){
+        CoroutineScope(Dispatchers.IO).launch {
+            db.DaoBillList().deleteBillList()
+        }
     }
 
 

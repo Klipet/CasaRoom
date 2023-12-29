@@ -63,6 +63,30 @@ class BonRegisterActivity : AppCompatActivity() {
             payplay()
         }
         handler.postDelayed(runn, millis.toLong())
+        bindingBon.btOplata.setOnClickListener {
+            oplata()
+        }
+    }
+
+    private fun oplata() {
+        val dialog = AlertDialogPayType(this)
+        CoroutineScope(Dispatchers.IO).launch {
+            val sum = getBilssSum()
+            val payment = getPayType()
+            val bill = getBillAsl()
+            if (sum != null && payment != null && bill != null){
+                CoroutineScope(Dispatchers.Main).launch {
+                    dialog.paiment(payment, sum, bill)
+                    dialog.alertDialogPay.show()
+                }
+
+            }else{
+                CoroutineScope(Dispatchers.Main).launch{
+                    dialog.alertDialogPay.dismiss()
+                }
+            }
+        }
+
     }
 
     private fun fragmentBillList() {
@@ -126,46 +150,30 @@ class BonRegisterActivity : AppCompatActivity() {
 
     }
     fun payplay() = with (bindingBon) {
-         btOplata.setOnClickListener {
-          //   if(viewPayment.visibility == View.VISIBLE){
-          //       val fragmentMenager = supportFragmentManager
-          //       val fragmentTransaction = fragmentMenager.beginTransaction()
-          //       val billfragment = PaymentFragment()
-          //       fragmentTransaction.replace(R.id.viewPayment, billfragment)
-          //       fragmentTransaction.addToBackStack(null)
-          //       fragmentTransaction.commit()
-          //   }else{
-          //       viewPayment.visibility  = View.VISIBLE
-          //   }
+        //   if(viewPayment.visibility == View.VISIBLE){
+        //       val fragmentMenager = supportFragmentManager
+        //       val fragmentTransaction = fragmentMenager.beginTransaction()
+        //       val billfragment = PaymentFragment()
+        //       fragmentTransaction.replace(R.id.viewPayment, billfragment)
+        //       fragmentTransaction.addToBackStack(null)
+        //       fragmentTransaction.commit()
+        //   }else{
+        //       viewPayment.visibility  = View.VISIBLE
+        //   }
 
-            val dialog = AlertDialogPayType(this@BonRegisterActivity)
-             getBilssSum { sum ->
-                 getPayType { payment ->
-                     getBillAsl {
-                         dialog.paiment(payment!!, sum!!, it!!)
-                     }
-
-                 }
-            }
-        }
     }
-    private fun getBilssSum(callback: (Double?) -> Unit){
+    private fun getBilssSum() :Double{
         val billSum = BillModel(db)
-         billSum.getSumBill().observe(this, Observer { sum ->
-             callback(sum)
-        })
+         return billSum.getBillSumToDialog()
     }
-    private fun getPayType(callback: (List<PaymentTypeDB>?) -> Unit){
+    private fun getPayType() :List<PaymentTypeDB>{
         val payType = SetingModel(db)
-        payType.payType().observe(this, Observer {
-            callback(it)
-        })
+        return payType.payTypeToAlertDialog()
+
     }
-    private fun getBillAsl(callback: (List<BillListDB>?) -> Unit){
-        val payType = BillModel(db)
-        payType.getBill().observe(this, Observer {
-            callback(it)
-        })
+    private fun getBillAsl(): List<BillListDB>{
+        val billList = BillModel(db)
+        return billList.getBillToDialog()
     }
 
     override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {

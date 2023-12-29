@@ -50,4 +50,7 @@ class SetingModel(private val db: DataBaseRoom): ViewModel() {
     fun payType(): LiveData<List<PaymentTypeDB>>{
         return db.DaoSetingWSP().selectPayment()
     }
+    fun payTypeToAlertDialog(): List<PaymentTypeDB>{
+        return db.DaoSetingWSP().selectPaymentToDialog()
+    }
 }

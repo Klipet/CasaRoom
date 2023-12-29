@@ -21,17 +21,22 @@ import com.example.casaroom.roomDB.work_seting.PaymentTypeDB
 import kotlin.math.abs
 
 
-class AlertDialogPayType(private val context: Context): DialogFragment(){
+class AlertDialogPayType(private val context: Context){
     private lateinit var payButton: PayTypeButtonAdapter
     private var paymentEnteredListener: PaymentListener? = null
 
-    val alertDialogPay = AlertDialog.Builder(context)
+    val alertDialogPay: AlertDialog
     val dialigViewPay = LayoutInflater.from(context).inflate(R.layout.payment_pay, null)
     val sum: TextView = dialigViewPay.findViewById(R.id.tvSum)
     val sumRest: TextView = dialigViewPay.findViewById(R.id.tvRest)
     val ostSdac: TextView = dialigViewPay.findViewById(R.id.tvSdacea)
     val inputSum: EditText = dialigViewPay.findViewById(R.id.edInployted)
     val recyclerPay = dialigViewPay.findViewById<RecyclerView>(R.id.rcPayTupe)
+    init {
+        alertDialogPay = AlertDialog.Builder(context)
+            .setView(dialigViewPay)
+            .create()
+    }
 
     fun paiment(paymentTypes: List<PaymentTypeDB>, totalPayment: Double, asl: List<BillListDB>){
         try {
@@ -80,10 +85,10 @@ class AlertDialogPayType(private val context: Context): DialogFragment(){
 0
                 }
             })
-            val paymentTypesAdapter = PayAdapter(paymentTypes, totalPayment,asl,  context)
+            val paymentTypesAdapter = PayAdapter(paymentTypes, totalPayment,asl,  context, alertDialogPay)
             recyclerPay.layoutManager = GridLayoutManager(context, 4)
             recyclerPay.adapter = paymentTypesAdapter
-            alertDialogPay.show()
+
 
         }catch (e: Exception){
             Log.d("Error add to pay", e.message.toString())

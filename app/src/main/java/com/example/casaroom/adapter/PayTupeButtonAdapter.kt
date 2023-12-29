@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.casaroom.R
 import com.example.casaroom.alert_dialog.PaymentListener
 import com.example.casaroom.databinding.ItemPayButtonBinding
-import com.example.casaroom.modelsView.RegisterBillModel
 import com.example.casaroom.roomDB.work_seting.PaymentTypeDB
 
 class PayTypeButtonAdapter (): ListAdapter<PaymentTypeDB, PayTypeButtonAdapter.Holder>(CompactPay()) {
@@ -23,7 +22,7 @@ class PayTypeButtonAdapter (): ListAdapter<PaymentTypeDB, PayTypeButtonAdapter.H
         fun bind(item: PaymentTypeDB?) {
             binding.btPaymentName.text = item?.Name
             itemView.setOnClickListener {
-                RegisterBillModel().createRegisterFiscal(item!!.Code!!.toInt())
+
             }
         }
 

@@ -19,4 +19,8 @@ class MainActivity : AppCompatActivity() {
         }
         handler.postDelayed(runnable, millis.toLong())
     }
+
+    fun getstate(){
+
+    }
 }

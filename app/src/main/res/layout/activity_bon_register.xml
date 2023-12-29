@@ -80,7 +80,6 @@
         android:fontFamily="serif"
         android:gravity="center"
         android:lineSpacingExtra="24sp"
-        android:onClick="payplay"
         android:text="Оплата"
         android:textAlignment="center"
         android:textColor="#FFFEFE"

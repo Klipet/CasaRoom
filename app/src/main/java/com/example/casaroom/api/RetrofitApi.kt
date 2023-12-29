@@ -29,6 +29,5 @@ interface RetrofitApi {
     @GET("/epos/json/GetWorkplaceSettings")
     suspend fun getSetingWP(@Query("Token")token: String, @Query("WorkplaceId")casa: String): SettingWorkSpace
 
-    @POST("fpservice/json/RegisterFiscalReceipt")
-    fun registerFiscalRecept(@Body fiscalRecept: RegisterFiscalReceipt): Call<RegisterFiscalReceipt>
+
 }
