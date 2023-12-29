@@ -14,6 +14,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.casaroom.R
+import com.example.casaroom.adapter.PayAdapter
 import com.example.casaroom.adapter.PayTypeButtonAdapter
 import com.example.casaroom.roomDB.bill.BillListDB
 import com.example.casaroom.roomDB.work_seting.PaymentTypeDB
@@ -35,7 +36,6 @@ class AlertDialogPayType(private val context: Context): DialogFragment(){
     fun paiment(paymentTypes: List<PaymentTypeDB>, totalPayment: Double, asl: List<BillListDB>){
         try {
             var restDefault = "0"
-            payButton = PayTypeButtonAdapter()
             alertDialogPay.setView(dialigViewPay)
             sum.text = totalPayment.toString()
             sumRest.text = restDefault
@@ -80,15 +80,10 @@ class AlertDialogPayType(private val context: Context): DialogFragment(){
 0
                 }
             })
-           val paymentTypesAdapter = PayTypeButtonAdapter()
+            val paymentTypesAdapter = PayAdapter(paymentTypes, totalPayment,asl,  context)
             recyclerPay.layoutManager = GridLayoutManager(context, 4)
             recyclerPay.adapter = paymentTypesAdapter
-            paymentTypesAdapter.submitList(paymentTypes)
             alertDialogPay.show()
-            recyclerPay.setOnClickListener {
-                val code = paymentTypes.lastOrNull()!!.Code.toString()
-                Toast.makeText(context, code, Toast.LENGTH_LONG).show()
-            }
 
         }catch (e: Exception){
             Log.d("Error add to pay", e.message.toString())
