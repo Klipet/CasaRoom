@@ -11,8 +11,13 @@ import com.example.casaroom.api.ApiFiscal
 import com.example.casaroom.clases.StartActivity
 import com.example.casaroom.db.fiscal_state.FiscalState
 import com.example.casaroom.db.post_fiscal_service.ReportRegister
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.net.ConnectException
 
 class MainActivity : AppCompatActivity() {
+    private val statusOk = "Ok"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,29 +36,38 @@ class MainActivity : AppCompatActivity() {
     //    }
     //    handler.postDelayed(runnable, millis.toLong())
 
-           if (getStatus().CurrentReport24HoursExpired == true) {
-               dialogZRaport()
-           }else{
-               val status = getStatus()
-               val handler = Handler()
-               val millis = 2000
-               val runnable = Runnable {
-                   if (status.CurrentReport24HoursExpired == true){
-                       Toast.makeText(baseContext, "Raport Z", Toast.LENGTH_LONG).show()
+        CoroutineScope(Dispatchers.IO).launch {
+            if (getStatus() == statusOk) {
+                dialogZRaport()
+                Toast.makeText(baseContext, "Raport Z", Toast.LENGTH_LONG).show()
+            }else{
+                CoroutineScope(Dispatchers.Main).launch {
+                    val handler = Handler()
+                    val millis = 2000
+                    val runnable = Runnable {
+                        val intent = Intent(this@MainActivity, StartActivity::class.java)
+                        startActivity(intent)
+                        finish()
+                    }
+                    handler.postDelayed(runnable, millis.toLong())
+                }
+            }
+        }
 
-                   }
-                   val intent = Intent(this, StartActivity::class.java)
-                   startActivity(intent)
-                   finish()
-               }
-               handler.postDelayed(runnable, millis.toLong())
-           }
     }
 
-    fun getStatus(): FiscalState{
-        val apiStatus = ApiFiscal.api.getState()
-        val status = apiStatus.execute().body()
-       return status!!
+    suspend fun getStatus(): String{
+        var status = ""
+        try {
+            val apiStatus = ApiFiscal.api.getState()
+            status = apiStatus.Status
+        }catch (e: ConnectException){
+            Toast.makeText(baseContext, e.message, Toast.LENGTH_LONG).show()
+        }finally {
+          return status!!
+        }
+
+
     }
     private fun dialogZRaport(){
         val dialog = AlertDialog.Builder(baseContext)
@@ -79,22 +93,28 @@ class MainActivity : AppCompatActivity() {
         )
          val response = postFiscaReport.execute()
         if (response.isSuccessful){
-            val status = getStatus()
-            val handler = Handler()
-            val millis = 2000
-            val runnable = Runnable {
-                if (status.CurrentReport24HoursExpired == true){
-                    Toast.makeText(baseContext, "Raport Z", Toast.LENGTH_LONG).show()
+            CoroutineScope(Dispatchers.IO).launch {
+                val status = getStatus()
+                val handler = Handler()
+                val millis = 2000
+                CoroutineScope(Dispatchers.Main).launch {
+                    val runnable = Runnable {
+                        if (status == statusOk) {
 
+                            Toast.makeText(baseContext, "Raport Z", Toast.LENGTH_LONG).show()
+                            val intent = Intent(this@MainActivity, StartActivity::class.java)
+                            startActivity(intent)
+                            finish()
+                        }
+
+                    }
+
+                    handler.postDelayed(runnable, millis.toLong())
                 }
-                val intent = Intent(this, StartActivity::class.java)
-                startActivity(intent)
-                finish()
             }
-            handler.postDelayed(runnable, millis.toLong())
+
         } else{
             Toast.makeText(baseContext, response.message(), Toast.LENGTH_LONG).show()
         }
-
     }
 }
