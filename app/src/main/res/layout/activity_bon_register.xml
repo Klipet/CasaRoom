@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#DCDADA"
+    android:textAlignment="center"
     tools:context=".clases.BonRegisterActivity">
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -58,12 +59,12 @@
         android:layout_weight="1"
         android:fontFamily="sans-serif"
         android:insetLeft="5dp"
+        android:onClick="payplay"
         android:text="Администрирование"
         android:textAlignment="center"
         android:textSize="34sp"
         android:textStyle="bold"
         android:typeface="sans"
-        android:onClick="payplay"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -91,19 +92,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:strokeColor="#D60E0E" />
 
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:text="Список Товаров"
-        android:textAlignment="center"
-        android:textSize="34sp"
-        android:textStyle="italic"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/tvNameCasa"
-        app:layout_constraintTop_toBottomOf="@+id/tvNameCasa" />
-
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabfolder"
         android:layout_width="0dp"
@@ -126,8 +114,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/btOplata"
-        app:layout_constraintTop_toBottomOf="@+id/textView4"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/edSearch" />
 
     <FrameLayout
         android:id="@+id/viewBillList"
@@ -137,7 +124,7 @@
         app:layout_constraintBottom_toTopOf="@+id/btOplata"
         app:layout_constraintEnd_toStartOf="@+id/vpAsl"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fbReturn" >
+        app:layout_constraintTop_toBottomOf="@+id/fbReturn">
 
     </FrameLayout>
 
@@ -151,6 +138,21 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.42000002"
         tools:visibility="gone" />
+
+    <EditText
+        android:id="@+id/edSearch"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Поиск товара"
+        android:inputType="text"
+        android:textAlignment="center"
+        android:textColorHint="#040000"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tvNamberBon"
+        app:layout_constraintTop_toBottomOf="@+id/btSetting" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
