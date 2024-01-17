@@ -21,4 +21,8 @@ interface DaoAssortiment {
 
     @Query("Select * from assortiment where ID=:id")
     fun getAslID(id: String): List<AsortimentDB>
+
+
+    @Query("select * from assortiment where Name like :query or Code like :query or barcode like :query ")
+    suspend fun searchAsl(query: String): List<AsortimentDB>
 }

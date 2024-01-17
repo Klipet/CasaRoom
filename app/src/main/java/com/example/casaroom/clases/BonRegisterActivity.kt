@@ -5,8 +5,11 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.PersistableBundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
+import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
@@ -46,6 +49,7 @@ class BonRegisterActivity : AppCompatActivity() {
     private lateinit var parentList: ParentView
     private lateinit var setingModel: SetingModel
     private lateinit var sh: SharedPreferences
+    private lateinit var aslFragment: AslListBlankFragment
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         bindingBon = ActivityBonRegisterBinding.inflate(layoutInflater)
@@ -114,7 +118,7 @@ class BonRegisterActivity : AppCompatActivity() {
             val vpAslGrid = bindingBon.vpAsl
             parentList = ParentView(db.DaoFolder())
             vp2 = findViewById(R.id.vpAsl)
-            val fragmentAsl = AslListBlankFragment()
+            aslFragment = AslListBlankFragment()
             val folder = parentList.folder()
             folder.observe(this@BonRegisterActivity, Observer {
                 runOnUiThread{
@@ -126,7 +130,7 @@ class BonRegisterActivity : AppCompatActivity() {
                         tab.text = it[position].name
                         val bundle = Bundle()
                         bundle.putString("parentID", it[position].IDAsl)
-                        fragmentAsl.arguments = bundle
+                        aslFragment.arguments = bundle
                     }.attach()
 
                 }
@@ -174,6 +178,28 @@ class BonRegisterActivity : AppCompatActivity() {
     private fun getBillAsl(): List<BillListDB>{
         val billList = BillModel(db)
         return billList.getBillToDialog()
+    }
+
+    fun searchAsl(){
+        aslFragment = AslListBlankFragment()
+        val search = bindingBon.edSearch
+        search.addTextChangedListener(object : TextWatcher{
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                TODO("Not yet implemented")
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                val searchQuery = s.toString()
+                aslFragment.
+
+            }
+
+        })
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
