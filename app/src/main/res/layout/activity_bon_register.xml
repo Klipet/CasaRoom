@@ -141,6 +141,7 @@
 
     <EditText
         android:id="@+id/edSearch"
+        style="@style/Widget.Material3.TextInputEditText.OutlinedBox"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ems="10"

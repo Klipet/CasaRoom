@@ -3,8 +3,13 @@ package com.example.casaroom.modelsView
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import android.view.animation.Transformation
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.room.Query
 import com.example.casaroom.clases.BonRegisterActivity
 import com.example.casaroom.db.assortiment.Assortment
 import com.example.casaroom.roomDB.DataBaseRoom
@@ -18,9 +23,24 @@ import kotlinx.coroutines.launch
 
 class AslModel(private val db: DataBaseRoom, private val context: Context):ViewModel() {
 
+    private val queryLiveData = MutableLiveData<String>()
+    val searchResults: LiveData<List<AsortimentDB>>
+    init {
+        val mediaptorLiveData = MediatorLiveData<List<AsortimentDB>>()
+        mediaptorLiveData.addSource(queryLiveData){ queryLiveData ->
+            viewModelScope.launch {
+                val resault = db.DaoAssortiment().searchAsl("%$queryLiveData%")
+                mediaptorLiveData.postValue(resault)
+            }
+
+        }
+        searchResults = mediaptorLiveData
+    }
+    fun setSearchQuery(query: String){
+        queryLiveData.value = query
+    }
      fun aslInsert(aslList: List<Assortment>){
         CoroutineScope(Dispatchers.IO).launch {
-
             try {
                 val barcodes = aslList?.map {
                     BarcodesDB(0, it.ID, it.Barcodes)
@@ -42,6 +62,7 @@ class AslModel(private val db: DataBaseRoom, private val context: Context):ViewM
             }
             try {
                 val asortimentList = aslList.map {
+
                     val promo = it?.Promotions?.map {
                         PromoDB(
                             0,
@@ -56,6 +77,7 @@ class AslModel(private val db: DataBaseRoom, private val context: Context):ViewM
                         )
                     }
                     promo?.let { it1 -> db.DaoProm().insertPromo(it1) }
+
                     AsortimentDB(
                         AllowDiscounts = it.AllowDiscounts,
                         AllowNonInteger = it.AllowNonInteger,
@@ -66,6 +88,7 @@ class AslModel(private val db: DataBaseRoom, private val context: Context):ViewM
                         parentID = it.ParentID,
                         Marking = it.Marking,
                         Name = it.Name,
+                        Barcode = it.Barcodes,
                         Price = it.Price,
                         PriceLineEndDate = it.PriceLineStartDate,
                         PriceLineId = it.PriceLineId,
@@ -94,8 +117,10 @@ class AslModel(private val db: DataBaseRoom, private val context: Context):ViewM
     }
 
 
-    fun getAslModel(): LiveData<List<AsortimentDB>>{
-        return db.DaoAssortiment().getAsl()
+
+    fun qeryAsl(query: String){
+        queryLiveData.value = query
+
     }
 
     fun getAslToBillList(aslID: String): List<AsortimentDB>{

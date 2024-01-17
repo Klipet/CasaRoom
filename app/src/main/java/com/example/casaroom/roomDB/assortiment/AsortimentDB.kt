@@ -30,6 +30,8 @@ data class AsortimentDB(
     var PriceLineEndDate: String?,
     @ColumnInfo(name = "PriceLineId")
     var PriceLineId: String?,
+    @ColumnInfo(name = "barcode")
+    var Barcode: List<String>,
     @ColumnInfo(name = "PriceLineStartDate")
     var PriceLineStartDate: String?,
     @ColumnInfo(name = "Promo")
