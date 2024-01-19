@@ -31,7 +31,7 @@ data class AsortimentDB(
     @ColumnInfo(name = "PriceLineId")
     var PriceLineId: String?,
     @ColumnInfo(name = "barcode")
-    var Barcode: List<String>,
+    var Barcode: List<String>?,
     @ColumnInfo(name = "PriceLineStartDate")
     var PriceLineStartDate: String?,
     @ColumnInfo(name = "Promo")

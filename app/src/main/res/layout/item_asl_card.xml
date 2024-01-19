@@ -18,7 +18,7 @@
         android:layout_height="match_parent"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-        android:background="#3A9E76"
+        android:background="@color/green"
         android:paddingLeft="5dp"
         android:paddingRight="5dp">
 
@@ -39,17 +39,45 @@
 
         <TextView
             android:id="@+id/tvPrice"
-            android:layout_width="226dp"
-            android:layout_height="65dp"
+            android:layout_width="133dp"
+            android:layout_height="59dp"
             android:fontFamily="sans-serif"
             android:gravity="center"
             android:text="150,50"
             android:textColor="#000000"
-            android:textSize="50dp"
+            android:textSize="40dp"
             android:textStyle="bold"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvNameAsl"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:text="TextView"
+            tools:layout_editor_absoluteX="275dp"
+            tools:layout_editor_absoluteY="85dp" />
+
+        <TextView
+            android:id="@+id/tvPromo"
+            android:layout_width="133dp"
+            android:layout_height="59dp"
+            android:fontFamily="sans-serif"
+            android:gravity="center"
+            android:text="150,50"
+            android:textColor="#000000"
+            android:textSize="40dp"
+            android:textStyle="bold"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="@+id/tvPrice"
             app:layout_constraintTop_toBottomOf="@+id/tvNameAsl"
             app:layout_constraintVertical_bias="0.0" />
 

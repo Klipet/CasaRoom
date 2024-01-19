@@ -8,7 +8,9 @@ class ViewModelFactory(private val yourDao: DaoAssortiment, private val parentID
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(AslModelList::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return AslModelList(yourDao, parentID) as T
+            return AslModelList(yourDao, parentID).apply {
+                loadAslData()
+            }as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

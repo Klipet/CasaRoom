@@ -20,26 +20,10 @@ import com.example.casaroom.roomDB.assortiment.PromoDB
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class AslModel(private val db: DataBaseRoom, private val context: Context):ViewModel() {
-
-    private val queryLiveData = MutableLiveData<String>()
-    val searchResults: LiveData<List<AsortimentDB>>
-    init {
-        val mediaptorLiveData = MediatorLiveData<List<AsortimentDB>>()
-        mediaptorLiveData.addSource(queryLiveData){ queryLiveData ->
-            viewModelScope.launch {
-                val resault = db.DaoAssortiment().searchAsl("%$queryLiveData%")
-                mediaptorLiveData.postValue(resault)
-            }
-
-        }
-        searchResults = mediaptorLiveData
-    }
-    fun setSearchQuery(query: String){
-        queryLiveData.value = query
-    }
-     fun aslInsert(aslList: List<Assortment>){
+    fun aslInsert(aslList: List<Assortment>){
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val barcodes = aslList?.map {
@@ -114,13 +98,6 @@ class AslModel(private val db: DataBaseRoom, private val context: Context):ViewM
             }
 
         }
-    }
-
-
-
-    fun qeryAsl(query: String){
-        queryLiveData.value = query
-
     }
 
     fun getAslToBillList(aslID: String): List<AsortimentDB>{

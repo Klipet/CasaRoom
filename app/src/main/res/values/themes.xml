@@ -2,8 +2,15 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.CasaRoom" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+         <item name="colorPrimary">@color/green</item>
+
     </style>
 
     <style name="Theme.CasaRoom" parent="Base.Theme.CasaRoom" />
+
+    <style name="MyPopupMenuStyle" parent="Widget.AppCompat.PopupMenu">
+        <item name="android:popupBackground">@android:color/white</item>
+        <!-- Другие свойства стиля, если необходимо -->
+    </style>
+
 </resources>
