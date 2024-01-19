@@ -8,7 +8,10 @@ import android.os.PersistableBundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.Gravity
 import android.view.View
+import android.widget.ArrayAdapter
+import android.widget.PopupMenu
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
@@ -25,6 +28,7 @@ import com.example.casaroom.databinding.ActivityBonRegisterBinding
 import com.example.casaroom.fragment.AslListBlankFragment
 import com.example.casaroom.fragment.BonListFragment
 import com.example.casaroom.fragment.PaymentFragment
+import com.example.casaroom.inter.SearchLisner
 import com.example.casaroom.modelsView.BillModel
 import com.example.casaroom.modelsView.CasaModel
 import com.example.casaroom.modelsView.ParentView
@@ -62,11 +66,14 @@ class BonRegisterActivity : AppCompatActivity() {
         fragmentBillList()
         getCasaName()
         tabList()
+        searchAsl()
         insertSeting()
+        adminSetting()
         val runn = Runnable {
             payplay()
         }
         handler.postDelayed(runn, millis.toLong())
+        bindingBon.btOplata.setBackgroundColor(resources.getColor(R.color.green))
         bindingBon.btOplata.setOnClickListener {
             oplata()
         }
@@ -131,6 +138,7 @@ class BonRegisterActivity : AppCompatActivity() {
                         val bundle = Bundle()
                         bundle.putString("parentID", it[position].IDAsl)
                         aslFragment.arguments = bundle
+
                     }.attach()
 
                 }
@@ -181,33 +189,45 @@ class BonRegisterActivity : AppCompatActivity() {
     }
 
     fun searchAsl(){
-        aslFragment = AslListBlankFragment()
-        val search = bindingBon.edSearch
-        search.addTextChangedListener(object : TextWatcher{
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                TODO("Not yet implemented")
-            }
+        try {
+            val searchListener = this as? SearchLisner
+            bindingBon.editTextText.addTextChangedListener(object : TextWatcher{
+                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                TODO("Not yet implemented")
-            }
+                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                    searchListener?.onSearch(p0.toString())
+                }
 
-            override fun afterTextChanged(s: Editable?) {
-                val searchQuery = s.toString()
-                aslFragment.
+                override fun afterTextChanged(p0: Editable?) {}
 
-            }
+            })
 
-        })
-
+        }catch (e: Exception){
+            Log.d("Error search", e.toString())
+        }
     }
+
+    fun adminSetting() = with (bindingBon){
+        val setingBt = btSetting
+        setingBt.setBackgroundColor(resources.getColor(R.color.green))
+        val items = arrayOf("Вариант 1", "Вариант 2", "Вариант 3")
+        setingBt.setOnClickListener {
+            val popupMenu = PopupMenu(this@BonRegisterActivity, setingBt, 0,10, R.style.MyPopupMenuStyle)
+            for (item in items){
+                popupMenu.menu.add(item)
+            }
+            popupMenu.gravity = Gravity.END
+            popupMenu.show()
+
+        }
+    }
+
+
 
     override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
         supportFragmentManager.beginTransaction()
         super.onCreate(savedInstanceState, persistentState)
     }
-
-
 
 
 }
