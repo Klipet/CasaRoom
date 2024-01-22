@@ -23,9 +23,16 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class AslModel(private val db: DataBaseRoom, private val context: Context):ViewModel() {
+    private val _loadingState = MutableLiveData<Boolean>()
+    val loadingState: LiveData<Boolean>
+        get() = _loadingState
+
+
     fun aslInsert(aslList: List<Assortment>){
         CoroutineScope(Dispatchers.IO).launch {
             try {
+
+
                 val barcodes = aslList?.map {
                     BarcodesDB(0, it.ID, it.Barcodes)
                     }
@@ -45,8 +52,8 @@ class AslModel(private val db: DataBaseRoom, private val context: Context):ViewM
                 Log.d("Error folder Insert", e.message.toString())
             }
             try {
+                _loadingState.postValue(true)
                 val asortimentList = aslList.map {
-
                     val promo = it?.Promotions?.map {
                         PromoDB(
                             0,
@@ -90,13 +97,12 @@ class AslModel(private val db: DataBaseRoom, private val context: Context):ViewM
                 db.DaoAssortiment().insertAsl(asortimentList)
                 val intent = Intent(context, BonRegisterActivity::class.java)
                 context.startActivity(intent)
+            }catch (e: Exception) {
 
-            }catch (e: Exception){
                 Log.d("ErrorAsortimentInsert and promo", e.message.toString())
             }finally {
-
+                _loadingState.postValue(false)
             }
-
         }
     }
 

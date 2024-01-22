@@ -31,6 +31,7 @@ class AslListAdapter: ListAdapter<AsortimentDB, AslListAdapter.Holder>(Compact()
             if (promo.isNullOrEmpty()){
                 tvPromo.visibility = View.GONE
                 tvPrice.text = String.format("%.2f", item.Price)
+
                 itemView.setOnClickListener {
                     showAlertDialog(item.Name.toString(), item.Price!!.toDouble(),
                         item.ID, item.VATQuote.toString(), item.Unit.toString(), itemView.context)

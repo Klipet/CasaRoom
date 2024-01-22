@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:visibility="visible"
     tools:context=".clases.StartActivity">
 
     <EditText
@@ -46,13 +47,13 @@
         app:layout_constraintTop_toBottomOf="@+id/tvPassword" />
 
     <ProgressBar
-        android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="250dp"
-        android:layout_height="25dp"
-        android:layout_marginTop="50dp"
+        android:id="@+id/pbStart"
+        style="@android:style/Widget.DeviceDefault.ProgressBar.Small.Title"
+        android:layout_width="359dp"
+        android:layout_height="150dp"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button" />
+        tools:layout_editor_absoluteY="224dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

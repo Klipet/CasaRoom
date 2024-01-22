@@ -5,7 +5,9 @@ import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
+import androidx.lifecycle.Observer
 import com.example.casaroom.api.API
 import com.example.casaroom.constant.Constant
 import com.example.casaroom.databinding.ActivityStartBinding
@@ -43,6 +45,7 @@ class StartActivity : AppCompatActivity() {
         try {
             binding.button.setOnClickListener {
                 insertToken(login.toString(), password.toString())
+                observLoadingState()
             }
         }catch (e: NullPointerException){
             Toast.makeText(applicationContext, e.toString(), Toast.LENGTH_LONG).show()
@@ -140,6 +143,22 @@ class StartActivity : AppCompatActivity() {
         }
 
 
+    }
+    private fun observLoadingState(){
+        vmAssortiment = AslModel(db, this)
+        binding.pbStart.visibility = View.VISIBLE
+        binding.tvLogin.isEnabled = false
+        binding.tvPassword.isEnabled = false
+        binding.button.isEnabled = false
+        vmAssortiment.loadingState.observe(this, Observer {isLoading ->
+            if (isLoading) {
+                // Показать ProgressBar
+                binding.pbStart.visibility = View.VISIBLE
+            } else {
+                // Скрыть ProgressBar
+                binding.pbStart.visibility = View.GONE
+            }
 
+        })
     }
 }

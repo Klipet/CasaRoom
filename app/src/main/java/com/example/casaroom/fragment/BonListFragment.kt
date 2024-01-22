@@ -50,7 +50,7 @@ class BonListFragment : Fragment() {
 
     fun initBil(){
         billModel = BillModel(db)
-        billAdapter = BillListAdapter()
+        billAdapter = BillListAdapter(db)
         binding.rcBillList.layoutManager = LinearLayoutManager(context)
         binding.rcBillList.adapter = billAdapter
         val billList =  billModel.getBill()

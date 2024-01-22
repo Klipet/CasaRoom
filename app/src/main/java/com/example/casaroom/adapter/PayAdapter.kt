@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.casaroom.R
@@ -16,6 +17,7 @@ import com.example.casaroom.constant.Constant
 import com.example.casaroom.db.post_fiscal_service.Line
 import com.example.casaroom.db.post_fiscal_service.Payment
 import com.example.casaroom.db.post_fiscal_service.RegisterFiscalReceipt
+import com.example.casaroom.db.post_fiscal_service.ResponseBill
 import com.example.casaroom.modelsView.BillModel
 import com.example.casaroom.roomDB.DataBaseRoom
 import com.example.casaroom.roomDB.bill.BillListDB
@@ -24,8 +26,9 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class PayAdapter( private val payment: List<PaymentTypeDB>, private val amount: Double,
-                  private val bill: List<BillListDB>, private val context: Context, private  val dialog: AlertDialog
+class PayAdapter(private val payment: List<PaymentTypeDB>, private val amount: Double,
+                 private val bill: List<BillListDB>, private val context: Context, private  val dialog: AlertDialog,
+    private val progressBar: ProgressBar
 ): RecyclerView.Adapter<PayAdapter.Holder>() {
     private lateinit var db: DataBaseRoom
     private lateinit var billModel: BillModel
@@ -49,6 +52,7 @@ class PayAdapter( private val payment: List<PaymentTypeDB>, private val amount: 
         db = DataBaseRoom.getDB(context)
 
         holder.button.setOnClickListener {
+            progressBar.visibility = View.VISIBLE
             val lines = bill.map {
                 Line(Discount = 0.0,
                     Margin = 0.0,
@@ -77,22 +81,42 @@ class PayAdapter( private val payment: List<PaymentTypeDB>, private val amount: 
             )
 
             val call = ApiFiscal.api.registerFiscalRecept(reqestBodyBill)
-            call.enqueue(object : Callback<RegisterFiscalReceipt> {
-                override fun onResponse(call: Call<RegisterFiscalReceipt>, response: Response<RegisterFiscalReceipt>) {
-                    if (response.isSuccessful){
-                        Toast.makeText(context," IS succesifull", Toast.LENGTH_LONG ).show()
-                        billModel = BillModel(db)
-                        billModel.deleteBill()
-                        dialog.dismiss()
-                    }
-                }
-                override fun onFailure(call: Call<RegisterFiscalReceipt>, t: Throwable) {
-                    Toast.makeText(context," Error", Toast.LENGTH_LONG ).show()
-                }
+           call.enqueue(object : Callback<RegisterFiscalReceipt> {
+               override fun onResponse(
+                   call: Call<RegisterFiscalReceipt>, response: Response<RegisterFiscalReceipt>) {
+                   progressBar.visibility = View.GONE
+                   val response = response.body()
+                   if (response != null){
+                       Toast.makeText(context," IS succesifull", Toast.LENGTH_LONG ).show()
+                       billModel = BillModel(db)
+                       billModel.deleteBill()
 
-            })
+                       dialog.dismiss()
+                   }
+                   else{
+                       Toast.makeText(context, "Empty response body", Toast.LENGTH_LONG).show()
+                       val responsecode = response
+                      // handleErrorResponse(errorCode, errorBody)
+                   }
+               }
+               override fun onFailure(call: Call<RegisterFiscalReceipt>, t: Throwable) {
+                   Toast.makeText(context," Error", Toast.LENGTH_LONG ).show()
+               }
+               private fun handleErrorResponse(errorCode: Int, errorBody: String?) {
+                   // Обработка ошибки с использованием тела ответа (если оно присутствует)
+                   if (!errorBody.isNullOrBlank()) {
+                       // Здесь вы можете выполнить обработку тела ответа с ошибкой
+                       Toast.makeText(context, "Error response body: $errorBody", Toast.LENGTH_LONG).show()
+                   } else {
+                       // Обработка, если тело ответа отсутствует
+                       Toast.makeText(context, "Unsuccessful response: $errorCode", Toast.LENGTH_LONG).show()
+                   }
+               }
+           })
         }
     }
 
 
 }
+
+
