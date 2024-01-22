@@ -15,6 +15,9 @@ interface DaoBillList {
     fun selectBillList(): List<BillListDB>
     @Query("delete from bill_List")
     fun deleteBillList()
+
+    @Query("delete from bill_List where `key` = :id" )
+    fun deleteBillItem(id: Int)
     @Query("select sum(aslSum) from bill_List")
     fun getSumBill(): LiveData<Double>
     @Query("select sum(aslSum) from bill_List")

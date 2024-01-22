@@ -8,6 +8,7 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.widget.EditText
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
@@ -16,6 +17,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.casaroom.R
 import com.example.casaroom.adapter.PayAdapter
 import com.example.casaroom.adapter.PayTypeButtonAdapter
+import com.example.casaroom.api.ApiFiscal
+import com.example.casaroom.api.RetrofitApiFiscal
 import com.example.casaroom.roomDB.bill.BillListDB
 import com.example.casaroom.roomDB.work_seting.PaymentTypeDB
 import kotlin.math.abs
@@ -32,6 +35,7 @@ class AlertDialogPayType(private val context: Context){
     val ostSdac: TextView = dialigViewPay.findViewById(R.id.tvSdacea)
     val inputSum: EditText = dialigViewPay.findViewById(R.id.edInployted)
     val recyclerPay = dialigViewPay.findViewById<RecyclerView>(R.id.rcPayTupe)
+    val respProgres = dialigViewPay.findViewById<ProgressBar>(R.id.pbpayResp)
     init {
         alertDialogPay = AlertDialog.Builder(context)
             .setView(dialigViewPay)
@@ -82,10 +86,9 @@ class AlertDialogPayType(private val context: Context){
 
                 }
                 override fun afterTextChanged(p0: Editable?) {
-0
                 }
             })
-            val paymentTypesAdapter = PayAdapter(paymentTypes, totalPayment,asl,  context, alertDialogPay)
+            val paymentTypesAdapter = PayAdapter(paymentTypes, totalPayment,asl,  context, alertDialogPay, respProgres)
             recyclerPay.layoutManager = GridLayoutManager(context, 4)
             recyclerPay.adapter = paymentTypesAdapter
 
