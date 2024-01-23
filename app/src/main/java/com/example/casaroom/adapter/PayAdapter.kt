@@ -2,6 +2,7 @@ package com.example.casaroom.adapter
 
 import android.app.AlertDialog
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,8 +23,12 @@ import com.example.casaroom.modelsView.BillModel
 import com.example.casaroom.roomDB.DataBaseRoom
 import com.example.casaroom.roomDB.bill.BillListDB
 import com.example.casaroom.roomDB.work_seting.PaymentTypeDB
+import com.google.gson.Gson
+import kotlinx.serialization.decodeFromString
 import retrofit2.Call
 import retrofit2.Callback
+import kotlinx.serialization.json.Json
+import okhttp3.OkHttp
 import retrofit2.Response
 
 class PayAdapter(private val payment: List<PaymentTypeDB>, private val amount: Double,
@@ -71,6 +76,8 @@ class PayAdapter(private val payment: List<PaymentTypeDB>, private val amount: D
                 )
             )
             val reqestBodyBill = RegisterFiscalReceipt(
+                ErrorCode = "",
+                ErrorMessage = "",
                 ClientEmail = "",
                 ClientPhone = "",
                 FooterText = "Thank you!",
@@ -79,23 +86,25 @@ class PayAdapter(private val payment: List<PaymentTypeDB>, private val amount: D
                 Number = "2",
                 Payments = linePayment
             )
+            val json = Gson()
 
             val call = ApiFiscal.api.registerFiscalRecept(reqestBodyBill)
            call.enqueue(object : Callback<RegisterFiscalReceipt> {
                override fun onResponse(
                    call: Call<RegisterFiscalReceipt>, response: Response<RegisterFiscalReceipt>) {
                    progressBar.visibility = View.GONE
-                   val response = response.body()
-                   if (response != null){
+                   val errorBody = response.errorBody()?.string()
+                   //val mesageError = Json.decodeFromString<ResponseBill>(errorBody?:  "")
+                   //val errorCode = mesageError.ErrorCode
+                   if (response.body()?.ErrorMessage.isNullOrEmpty()){
                        Toast.makeText(context," IS succesifull", Toast.LENGTH_LONG ).show()
                        billModel = BillModel(db)
                        billModel.deleteBill()
-
                        dialog.dismiss()
-                   }
-                   else{
+                       Log.d("Error body", response.body().toString())
+                   } else{
                        Toast.makeText(context, "Empty response body", Toast.LENGTH_LONG).show()
-                       val responsecode = response
+
                       // handleErrorResponse(errorCode, errorBody)
                    }
                }
