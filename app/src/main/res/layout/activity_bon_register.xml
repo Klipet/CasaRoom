@@ -40,7 +40,6 @@
         android:layout_weight="1"
         android:fontFamily="sans-serif"
         android:insetLeft="5dp"
-        android:onClick="payplay"
         android:text="Администрирование"
         android:textAlignment="center"
         android:textSize="34sp"

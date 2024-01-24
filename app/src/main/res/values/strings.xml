@@ -3,9 +3,9 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="search_and_asl">Поиск ассортимента</string>
+    <string name="z">Отчет Z</string>
+    <string name="x">Отчет X</string>
+    <string name="copyBil">Копия счета</string>
+    <string name="copyRaort">Копия Отчета</string>
 
-    <style name="bill_item_list">
-        <item name="background">@color/green</item>
-        <item name="round">5dp</item>
-    </style>
 </resources>
