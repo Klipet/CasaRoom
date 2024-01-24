@@ -8,7 +8,9 @@ import android.os.PersistableBundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.ContextMenu
 import android.view.Gravity
+import android.view.MenuItem
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.PopupMenu
@@ -210,18 +212,42 @@ class BonRegisterActivity : AppCompatActivity() {
     fun adminSetting() = with (bindingBon){
         val setingBt = btSetting
         setingBt.setBackgroundColor(resources.getColor(R.color.green))
-        val items = arrayOf("Вариант 1", "Вариант 2", "Вариант 3")
+        registerForContextMenu(setingBt)
         setingBt.setOnClickListener {
-            val popupMenu = PopupMenu(this@BonRegisterActivity, setingBt, 0,10, R.style.MyPopupMenuStyle)
-            for (item in items){
-                popupMenu.menu.add(item)
-            }
-            popupMenu.gravity = Gravity.END
-            popupMenu.show()
-
+            showPopupMenu(setingBt)
         }
-    }
 
+    }
+    private fun showPopupMenu(view: View) {
+        val popupMenu = PopupMenu(this, view)
+        popupMenu.inflate(R.menu.items_menu)
+        popupMenu.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.zRaport -> {
+                    // Обработка выбора первого элемента меню
+                     true
+                }
+                R.id.xRaport -> {
+                    // Обработка выбора первого элемента меню
+                    true
+                }
+                R.id.copyBill -> {
+                    // Обработка выбора первого элемента меню
+                    true
+                }
+                R.id.copyRaport -> {
+                    // Обработка выбора первого элемента меню
+                    true
+                }
+                // Добавьте обработку других элементов меню, если необходимо
+                else -> false
+            }
+        }
+
+        popupMenu.gravity = Gravity.END
+        popupMenu.show()
+
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
