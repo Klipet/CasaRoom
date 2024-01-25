@@ -41,7 +41,6 @@ class PayAdapter(private val payment: List<PaymentTypeDB>, private val amount: D
 ): RecyclerView.Adapter<PayAdapter.Holder>() {
     private lateinit var db: DataBaseRoom
     private lateinit var billModel: BillModel
-
     class Holder(item: View): RecyclerView.ViewHolder(item) {
         val button: Button = item.findViewById(R.id.btPaymentName)
     }
