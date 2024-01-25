@@ -167,7 +167,6 @@ class PayAdapter(private val payment: List<PaymentTypeDB>, private val amount: D
                 ClosingDate = formatStringData,
                 Lines = linesSales,
                 Payments = paymentSales
-
             )
         }
 
