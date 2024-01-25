@@ -2,22 +2,28 @@ package com.example.casaroom.adapter
 
 import android.app.AlertDialog
 import android.content.Context
+import android.content.SharedPreferences
+import android.os.Build
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.example.casaroom.R
-import com.example.casaroom.alert_dialog.AlertDialogPayType
+import com.example.casaroom.api.API
 import com.example.casaroom.api.ApiFiscal
-import com.example.casaroom.clases.RegisterBill
 import com.example.casaroom.constant.Constant
+import com.example.casaroom.db.postBillSales.BillSales
+import com.example.casaroom.db.postBillSales.LineSales
+import com.example.casaroom.db.postBillSales.PaymentSales
+import com.example.casaroom.db.postBillSales.PostBillSales
 import com.example.casaroom.db.post_fiscal_service.Line
 import com.example.casaroom.db.post_fiscal_service.Payment
 import com.example.casaroom.db.post_fiscal_service.RegisterFiscalReceipt
-import com.example.casaroom.db.post_fiscal_service.ResponseBill
 import com.example.casaroom.modelsView.BillModel
 import com.example.casaroom.roomDB.DataBaseRoom
 import com.example.casaroom.roomDB.bill.BillListDB
@@ -25,10 +31,16 @@ import com.example.casaroom.roomDB.work_seting.PaymentTypeDB
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.Date
+import java.util.TimeZone
+import java.util.UUID
 
 class PayAdapter(private val payment: List<PaymentTypeDB>, private val amount: Double,
                  private val bill: List<BillListDB>, private val context: Context, private  val dialog: AlertDialog,
-    private val progressBar: ProgressBar
+    private val progressBar: ProgressBar, private val sharedPreferences: SharedPreferences
 ): RecyclerView.Adapter<PayAdapter.Holder>() {
     private lateinit var db: DataBaseRoom
     private lateinit var billModel: BillModel
@@ -77,44 +89,116 @@ class PayAdapter(private val payment: List<PaymentTypeDB>, private val amount: D
                 HeaderText = "",
                 Lines = lines,
                 Number = "2",
-                Payments = linePayment
+                Payments = linePayment,
+                ErrorCode = "",
+                ErrorMesage = ""
             )
 
             val call = ApiFiscal.api.registerFiscalRecept(reqestBodyBill)
            call.enqueue(object : Callback<RegisterFiscalReceipt> {
+               @RequiresApi(Build.VERSION_CODES.O)
                override fun onResponse(
                    call: Call<RegisterFiscalReceipt>, response: Response<RegisterFiscalReceipt>) {
                    progressBar.visibility = View.GONE
                    val response = response.body()
-                   if (response != null){
-                       Toast.makeText(context," IS succesifull", Toast.LENGTH_LONG ).show()
-                       billModel = BillModel(db)
-                       billModel.deleteBill()
-
-                       dialog.dismiss()
+                   if (response?.ErrorMesage.isNullOrEmpty()){
+                       Toast.makeText(context," ISFiscalService", Toast.LENGTH_LONG ).show()
+                       postSales(btpayment)
                    }
                    else{
-                       Toast.makeText(context, "Empty response body", Toast.LENGTH_LONG).show()
-                       val responsecode = response
-                      // handleErrorResponse(errorCode, errorBody)
+                       Toast.makeText(context, "Not Connect to FiscalService", Toast.LENGTH_LONG).show()
+
                    }
                }
                override fun onFailure(call: Call<RegisterFiscalReceipt>, t: Throwable) {
                    Toast.makeText(context," Error", Toast.LENGTH_LONG ).show()
                }
-               private fun handleErrorResponse(errorCode: Int, errorBody: String?) {
-                   // Обработка ошибки с использованием тела ответа (если оно присутствует)
-                   if (!errorBody.isNullOrBlank()) {
-                       // Здесь вы можете выполнить обработку тела ответа с ошибкой
-                       Toast.makeText(context, "Error response body: $errorBody", Toast.LENGTH_LONG).show()
-                   } else {
-                       // Обработка, если тело ответа отсутствует
-                       Toast.makeText(context, "Unsuccessful response: $errorCode", Toast.LENGTH_LONG).show()
-                   }
-               }
            })
         }
+
+
+
     }
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun postSales(paymentSelected: PaymentTypeDB){
+        val token = sharedPreferences.getString(Constant.TOKEN, "Non")!!
+        val standartDate = Date()
+        val timespec = standartDate.time
+        val timeZone = TimeZone.getDefault().rawOffset / (60*1000)
+        val combiner = timespec + timeZone * 60 * 1000
+        val formatStringData = "\\/Date($combiner+${String.format("%04d", timeZone)})\\/"
+        val linesSales = bill.map {
+            LineSales(
+                Count = it.aslCouner,
+                CreatedByID = token,
+                CreationDate = formatStringData,
+                DeletedByID = "",
+                DeletionDate = "",
+                IsDeleted = false,
+                Price = it.aslPrice,
+                PriceLineID = it.priceLine,
+                PromoPrice = 0.0,
+                Sum = it.aslSum,
+                SumWithDiscount = it.aslSum,
+                VATQuote = it.codeTVA
+            )
+        }
+        val sum = bill[0].aslSum
+
+        val paymentSales = listOf<PaymentSales>(
+            PaymentSales(
+                CreatedByID = token,
+                CreationDate = formatStringData,
+                ID = UUID.randomUUID().toString(),
+                PaymentTypeID = paymentSelected.PredefinedIndex.toString(),
+                Sum = sum
+            )
+        )
+        val billList = mutableListOf<BillSales>()
+        billList.addAll( linesSales.mapIndexed { index, line ->
+            BillSales(
+                CardID = "",
+                ClientID = "",
+                ID = UUID.randomUUID().toString(),
+                ClosedByID = token,
+                Number = (index + 1).toLong(),
+                OpenedByID = token,
+                CreationDate = formatStringData,
+                ClosingDate = formatStringData,
+                Lines = linesSales,
+                Payments = paymentSales
+
+            )
+        }
+
+        )
+        val postBill = PostBillSales(
+            Bills = billList,
+            ShiftID = "2",
+            Token = UUID.randomUUID().toString()
+        )
+
+        val apiPost = API.api.postBillSales(postBill)
+        apiPost.enqueue(object : Callback<PostBillSales>{
+            override fun onResponse(call: Call<PostBillSales>, response: Response<PostBillSales>) {
+                try {
+                    if (response.isSuccessful){
+                        billModel = BillModel(db)
+                        billModel.deleteBill()
+                        dialog.dismiss()
+                    }
+                }catch (e: Exception){
+                   Log.d("Post SaveBill", e.toString())
+                }
+            }
+
+            override fun onFailure(call: Call<PostBillSales>, t: Throwable) {
+                Log.d("reqest save Bill", t.message.toString())
+            }
+
+        })
+    }
+
 
 
 }

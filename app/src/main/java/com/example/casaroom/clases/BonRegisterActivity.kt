@@ -82,7 +82,7 @@ class BonRegisterActivity : AppCompatActivity() {
     }
 
     private fun oplata() {
-        val dialog = AlertDialogPayType(this)
+        val dialog = AlertDialogPayType(this, sh)
         CoroutineScope(Dispatchers.IO).launch {
             val sum = getBilssSum()
             val payment = getPayType()
@@ -125,6 +125,8 @@ class BonRegisterActivity : AppCompatActivity() {
         try {
             var tabFolder = bindingBon.tabfolder
             val vpAslGrid = bindingBon.vpAsl
+            tabFolder.tabTextColors = getColorStateList(R.color.black)
+            tabFolder.foregroundGravity = Gravity.CENTER
             parentList = ParentView(db.DaoFolder())
             vp2 = findViewById(R.id.vpAsl)
             aslFragment = AslListBlankFragment()

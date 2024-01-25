@@ -16,6 +16,7 @@
         android:layout_weight="1"
         android:text="Чек №5"
         android:textSize="50sp"
+        app:layout_constraintEnd_toStartOf="@+id/editTextText"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -101,7 +102,7 @@
         android:layout_height="0dp"
         android:layout_marginBottom="15dp"
         app:layout_constraintBottom_toTopOf="@+id/btOplata"
-        app:layout_constraintEnd_toStartOf="@+id/vpAsl"
+        app:layout_constraintEnd_toEndOf="@+id/btOplata"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvNamberBon">
 

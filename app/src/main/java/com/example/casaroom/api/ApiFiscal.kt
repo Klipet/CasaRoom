@@ -14,7 +14,7 @@ class ApiFiscal {
             val logging = HttpLoggingInterceptor()
             logging.setLevel(HttpLoggingInterceptor.Level.BODY)
             val client = OkHttpClient.Builder()
-                .callTimeout(30, TimeUnit.SECONDS)
+                .callTimeout(10, TimeUnit.SECONDS)
                 .addInterceptor(logging)
                 .build()
             Retrofit.Builder()

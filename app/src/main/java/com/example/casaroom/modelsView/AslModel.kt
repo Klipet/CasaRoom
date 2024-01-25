@@ -29,15 +29,11 @@ class AslModel(private val db: DataBaseRoom, private val context: Context):ViewM
 
 
     fun aslInsert(aslList: List<Assortment>){
+        _loadingState.postValue(true)
         CoroutineScope(Dispatchers.IO).launch {
             try {
-
-
-                val barcodes = aslList?.map {
-                    BarcodesDB(0, it.ID, it.Barcodes)
-                    }
+                val barcodes = aslList?.map { BarcodesDB(0, it.ID, it.Barcodes)}
                     barcodes?.let { db.DaoCBarcodes().insertBarcodes(it) }
-
             }catch (e: Exception){
                 Log.d("Error Barcode Insert", e.message.toString())
             }
@@ -52,19 +48,18 @@ class AslModel(private val db: DataBaseRoom, private val context: Context):ViewM
                 Log.d("Error folder Insert", e.message.toString())
             }
             try {
-                _loadingState.postValue(true)
                 val asortimentList = aslList.map {
-                    val promo = it?.Promotions?.map {
+                    val promo = it?.Promotions?.map {promo ->
                         PromoDB(
-                            0,
-                            AllowDiscount = it.AllowDiscount,
+                            id = 0,
+                            AllowDiscount = promo.AllowDiscount,
                             AslID = it.ID,
-                            EndDate = it.EndDate,
-                            IDPromo = it.ID,
-                            Price = it.Price,
-                            StartDate = it.StartDate,
-                            TimeBegin = it.TimeBegin,
-                            TimeEnd = it.TimeEnd
+                            EndDate = promo.EndDate,
+                            IDPromo = promo.ID,
+                            Price = promo.Price,
+                            StartDate = promo.StartDate,
+                            TimeBegin = promo.TimeBegin,
+                            TimeEnd = promo.TimeEnd
                         )
                     }
                     promo?.let { it1 -> db.DaoProm().insertPromo(it1) }
@@ -104,10 +99,6 @@ class AslModel(private val db: DataBaseRoom, private val context: Context):ViewM
                 _loadingState.postValue(false)
             }
         }
-    }
-
-    fun getAslToBillList(aslID: String): List<AsortimentDB>{
-        return db.DaoAssortiment().getAslID(aslID)
     }
 
 }

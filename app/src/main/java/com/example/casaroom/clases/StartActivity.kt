@@ -133,7 +133,7 @@ class StartActivity : AppCompatActivity() {
             val casa = db.DaoCasa().getAllCasa()
             dataAveibl = casa != null && casa.casaID.isNotEmpty()
             val casaID = casa.casaID
-            GlobalScope.launch {
+            withContext(Dispatchers.IO) {
                 val aslResponse = API.api.getAslWP(token.toString(), casaID).Assortments
                 vmAssortiment.aslInsert(aslResponse)
             }
