@@ -10,14 +10,10 @@ import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.casaroom.R
-import com.example.casaroom.alert_dialog.AlertDialogPayType
 import com.example.casaroom.api.ApiFiscal
-import com.example.casaroom.clases.RegisterBill
-import com.example.casaroom.constant.Constant
 import com.example.casaroom.db.post_fiscal_service.Line
 import com.example.casaroom.db.post_fiscal_service.Payment
 import com.example.casaroom.db.post_fiscal_service.RegisterFiscalReceipt
-import com.example.casaroom.db.post_fiscal_service.ResponseBill
 import com.example.casaroom.modelsView.BillModel
 import com.example.casaroom.roomDB.DataBaseRoom
 import com.example.casaroom.roomDB.bill.BillListDB
@@ -115,8 +111,6 @@ class PayAdapter(private val payment: List<PaymentTypeDB>, private val amount: D
            })
         }
     }
-
-
 }
 
 
