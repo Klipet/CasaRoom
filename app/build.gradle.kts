@@ -46,6 +46,9 @@ dependencies {
     implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
     implementation ("androidx.recyclerview:recyclerview:1.3.1")
 
+    //serealizate
+    implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0")
+
     //rooms DB
     implementation ("androidx.room:room-ktx:2.6.0")
     implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
@@ -65,6 +68,7 @@ dependencies {
     implementation ("com.squareup.retrofit2:adapter-rxjava2:2.9.0")
     implementation ("com.jakewharton.retrofit:retrofit2-rxjava2-adapter:1.0.0")
     implementation ("com.squareup.okhttp3:okhttp:5.0.0-alpha.11")
+    implementation ("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.8.0")
     implementation ("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.11")
 
     implementation("androidx.core:core-ktx:1.9.0")

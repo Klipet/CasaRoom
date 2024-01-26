@@ -16,6 +16,9 @@ class API {
             logging.setLevel(HttpLoggingInterceptor.Level.BODY)
             val client = OkHttpClient.Builder()
                 .callTimeout(30, TimeUnit.SECONDS)
+                .connectTimeout(30, TimeUnit.SECONDS) // Увеличьте тайм-аут подключения
+                .readTimeout(30, TimeUnit.SECONDS) // Увеличьте тайм-аут чтения
+                .writeTimeout(30, TimeUnit.SECONDS) // Увеличьте тайм-аут записи
                 .addInterceptor(logging)
                 .build()
             Retrofit.Builder()
