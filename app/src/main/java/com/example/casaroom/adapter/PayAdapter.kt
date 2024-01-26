@@ -2,6 +2,8 @@ package com.example.casaroom.adapter
 
 import android.app.AlertDialog
 import android.content.Context
+import android.content.SharedPreferences
+import android.os.Build
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -9,13 +11,16 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.example.casaroom.R
 import com.example.casaroom.api.ApiFiscal
 import com.example.casaroom.db.post_fiscal_service.Line
 import com.example.casaroom.db.post_fiscal_service.Payment
 import com.example.casaroom.db.post_fiscal_service.RegisterFiscalReceipt
+import com.example.casaroom.db.save_bill_sales.SaveBillSales
 import com.example.casaroom.modelsView.BillModel
+import com.example.casaroom.modelsView.PostSalesBill
 import com.example.casaroom.roomDB.DataBaseRoom
 import com.example.casaroom.roomDB.bill.BillListDB
 import com.example.casaroom.roomDB.work_seting.PaymentTypeDB
@@ -29,10 +34,11 @@ import retrofit2.Response
 
 class PayAdapter(private val payment: List<PaymentTypeDB>, private val amount: Double,
                  private val bill: List<BillListDB>, private val context: Context, private  val dialog: AlertDialog,
-    private val progressBar: ProgressBar
-): RecyclerView.Adapter<PayAdapter.Holder>() {
+    private val progressBar: ProgressBar, private val sharedPreferences: SharedPreferences)
+    : RecyclerView.Adapter<PayAdapter.Holder>() {
     private lateinit var db: DataBaseRoom
     private lateinit var billModel: BillModel
+    private lateinit var billSave: PostSalesBill
 
     class Holder(item: View): RecyclerView.ViewHolder(item) {
         val button: Button = item.findViewById(R.id.btPaymentName)
@@ -80,23 +86,27 @@ class PayAdapter(private val payment: List<PaymentTypeDB>, private val amount: D
                 HeaderText = "",
                 Lines = lines,
                 Number = "2",
-                Payments = linePayment
+                Payments = linePayment,
+                ErrorCode = "",
+                ErrorMessage = ""
             )
             val json = Gson()
-
             val call = ApiFiscal.api.registerFiscalRecept(reqestBodyBill)
            call.enqueue(object : Callback<RegisterFiscalReceipt> {
                override fun onResponse(
                    call: Call<RegisterFiscalReceipt>, response: Response<RegisterFiscalReceipt>) {
                    progressBar.visibility = View.GONE
+
+                   if (!response.body()?.ErrorMessage.isNullOrEmpty()){
+                       Toast.makeText(context," IS succesifull", Toast.LENGTH_LONG ).show()
+                       controlSaveBill()
+                   }
+                   else{
                    val errorBody = response.errorBody()?.string()
                    //val mesageError = Json.decodeFromString<ResponseBill>(errorBody?:  "")
                    //val errorCode = mesageError.ErrorCode
                    if (response.body()?.ErrorMessage.isNullOrEmpty()){
                        Toast.makeText(context," IS succesifull", Toast.LENGTH_LONG ).show()
-                       billModel = BillModel(db)
-                       billModel.deleteBill()
-                       dialog.dismiss()
                        Log.d("Error body", response.body().toString())
                    } else{
                        Toast.makeText(context, "Empty response body", Toast.LENGTH_LONG).show()
@@ -118,7 +128,30 @@ class PayAdapter(private val payment: List<PaymentTypeDB>, private val amount: D
                    }
                }
            })
+
         }
+
+    }
+
+    fun controlSaveBill(){
+        billSave = PostSalesBill(payment, amount, bill, sharedPreferences)
+        val saveBillSales = billSave.postBillModel()
+        saveBillSales.enqueue(object : Callback<SaveBillSales>{
+            override fun onResponse(call: Call<SaveBillSales>, response: Response<SaveBillSales>) {
+                if (response.isSuccessful){
+                    billModel = BillModel(db)
+                    billModel.deleteBill()
+                    dialog.dismiss()
+                }else{
+                    Log.d("Error Response Save Bill", response.errorBody().toString())
+                }
+            }
+
+            override fun onFailure(call: Call<SaveBillSales>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+
+        })
     }
 }
 

@@ -34,7 +34,7 @@ class AslListAdapter: ListAdapter<AsortimentDB, AslListAdapter.Holder>(Compact()
 
                 itemView.setOnClickListener {
                     showAlertDialog(item.Name.toString(), item.Price!!.toDouble(),
-                        item.ID, item.VATQuote.toString(), item.Unit.toString(), itemView.context)
+                        item.ID, item.VATQuote.toString(), item.Unit.toString(), item.VAT!!.toDouble(), item.PriceLineId.toString(), itemView.context)
                 }
             }else{
                 promo?.forEach { promo ->
@@ -43,13 +43,13 @@ class AslListAdapter: ListAdapter<AsortimentDB, AslListAdapter.Holder>(Compact()
                     tvPromo.text = String.format("%.2f", promo.Price)
                     itemView.setOnClickListener {
                         showAlertDialog(item.Name.toString(), promo.Price!!.toDouble(),
-                            item.ID, item.VATQuote.toString(), item.Unit.toString(), itemView.context)
+                            item.ID, item.VATQuote.toString(), item.Unit.toString() , item.VAT!!.toDouble(), item.PriceLineId.toString(), itemView.context)
                     }
                 }
             }
         }
-        private fun showAlertDialog(item: String, priceItem: Double, idAsl: String, tva: String, unit: String, context: Context) {
-            AlertDialogAslToBill(context).onCloc(item, priceItem, idAsl,tva, unit, context)
+        private fun showAlertDialog(item: String, priceItem: Double, idAsl: String, tva: String, unit: String,vatQuoti: Double, priceLine: String, context: Context) {
+            AlertDialogAslToBill(context).onCloc(item, priceItem, idAsl,tva, unit, vatQuoti, priceLine, context)
         }
     }
 

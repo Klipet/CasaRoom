@@ -23,6 +23,12 @@ data class BillListDB(
     @ColumnInfo("unit_code")
     var aslunitCode: String,
     @ColumnInfo("unit_name")
-    var aslunitName: String
+    var aslunitName: String,
+    @ColumnInfo("price_line")
+    var aslPriceLine: String,
+    @ColumnInfo("VAT_Quoli")
+    var VATQuoti: Double
+
+
 
 )

@@ -1,0 +1,14 @@
+package com.example.casaroom.db.save_bill_sales
+
+data class LineSales(
+    val Count: Double,
+    val CreatedByID: String,
+    val CreationDate: String,
+    val IsDeleted: Boolean,
+    val Price: Double,
+    val PriceLineID: String,
+    val PromoPrice: Double,
+    val Sum: Double,
+    val SumWithDiscount: Double,
+    val VATQuote: Double
+)
