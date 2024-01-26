@@ -4,6 +4,8 @@ data class LineSales(
     val Count: Double,
     val CreatedByID: String,
     val CreationDate: String,
+    val DeletedByID: String,
+    val DeletionDate: String,
     val IsDeleted: Boolean,
     val Price: Double,
     val PriceLineID: String,

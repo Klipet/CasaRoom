@@ -91,9 +91,9 @@ class PayAdapter(private val payment: List<PaymentTypeDB>, private val amount: D
                    call: Call<RegisterFiscalReceipt>, response: Response<RegisterFiscalReceipt>) {
                    progressBar.visibility = View.GONE
 
-                   if (!response.body()?.ErrorMessage.isNullOrEmpty()){
+                   if (response.body()?.ErrorMessage.isNullOrEmpty()){
                        Toast.makeText(context," IS succesifull", Toast.LENGTH_LONG ).show()
-                       controlSaveBill()
+                       controlSaveBill(btpayment.Code.toString())
                    }
                    else{
                        Toast.makeText(context, "Empty response body", Toast.LENGTH_LONG).show()
@@ -115,13 +115,10 @@ class PayAdapter(private val payment: List<PaymentTypeDB>, private val amount: D
                    }
                }
            })
-
         }
-
     }
-
-    fun controlSaveBill(){
-        billSave = PostSalesBill(payment, amount, bill, sharedPreferences)
+    fun controlSaveBill(paymentName: String){
+        billSave = PostSalesBill(payment, amount, bill, sharedPreferences, paymentName)
         val saveBillSales = billSave.postBillModel()
         saveBillSales.enqueue(object : Callback<SaveBillSales>{
             override fun onResponse(call: Call<SaveBillSales>, response: Response<SaveBillSales>) {
@@ -140,6 +137,8 @@ class PayAdapter(private val payment: List<PaymentTypeDB>, private val amount: D
 
         })
     }
+
+
 }
 
 
