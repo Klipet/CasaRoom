@@ -30,7 +30,7 @@ interface RetrofitApi {
     @GET("/epos/json/GetWorkplaceSettings")
     suspend fun getSetingWP(@Query("Token")token: String, @Query("WorkplaceId")casa: String): SettingWorkSpace
 
-    @POST("/epos/json/SaveBill")
+    @POST("/epos/json/SaveBills")
     fun postBill(@Body saveBillSales: SaveBillSales): Call<SaveBillSales>
 
 

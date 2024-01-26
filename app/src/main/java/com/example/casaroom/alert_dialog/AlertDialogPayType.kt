@@ -2,6 +2,7 @@ package com.example.casaroom.alert_dialog
 
 import android.app.AlertDialog
 import android.content.Context
+import android.content.SharedPreferences
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
@@ -24,7 +25,7 @@ import com.example.casaroom.roomDB.work_seting.PaymentTypeDB
 import kotlin.math.abs
 
 
-class AlertDialogPayType(private val context: Context){
+class AlertDialogPayType(private val context: Context, private val sh: SharedPreferences){
     private lateinit var payButton: PayTypeButtonAdapter
     private var paymentEnteredListener: PaymentListener? = null
 
@@ -88,7 +89,7 @@ class AlertDialogPayType(private val context: Context){
                 override fun afterTextChanged(p0: Editable?) {
                 }
             })
-            val paymentTypesAdapter = PayAdapter(paymentTypes, totalPayment,asl,  context, alertDialogPay, respProgres)
+            val paymentTypesAdapter = PayAdapter(paymentTypes, totalPayment,asl,  context, alertDialogPay, respProgres, sh)
             recyclerPay.layoutManager = GridLayoutManager(context, 4)
             recyclerPay.adapter = paymentTypesAdapter
 

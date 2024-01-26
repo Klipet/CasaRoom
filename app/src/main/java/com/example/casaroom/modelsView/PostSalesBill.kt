@@ -2,6 +2,7 @@ package com.example.casaroom.modelsView
 
 import android.content.SharedPreferences
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import com.example.casaroom.api.API
@@ -21,69 +22,77 @@ import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.sql.Time
+import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.Date
+import java.util.Locale
 import java.util.TimeZone
+import java.util.UUID
 
 class PostSalesBill(private val payment: List<PaymentTypeDB>, private val amount: Double,
-                    private val bill: List<BillListDB>, private val sharedPreferences: SharedPreferences): ViewModel() {
+                    private val bill: List<BillListDB>, private val sharedPreferences: SharedPreferences,
+                    private val paymentName: String): ViewModel() {
+
 
 
     fun postBillModel(): Call<SaveBillSales> {
+        val standardDate = Date()
+       // Получаем миллисекунды
+        val timestamp = standardDate.time
+        // Получаем текущее смещение времени относительно UTC
+        val timeZoneOffset = TimeZone.getDefault().rawOffset / (60 * 1000)
+        // Складываем миллисекунды и смещение времени
+        val combinedTime = timestamp + timeZoneOffset / 4
+        // Форматируем в строку в формате \/Date(...)\/
+        val formattedDate = "/Date($combinedTime+${String.format("%04d", timeZoneOffset)})/"
+        Log.d("Data", formattedDate)
         var number = 1
         val token = sharedPreferences.getString(Constant.TOKEN, "Non").toString()
         val lines = bill.map {
             LineSales(
                 Count = it.aslCouner,
-                CreationDate = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    LocalDateTime.now(ZoneId.systemDefault()).toString()
-                } else {
-                }.toString(),
-                CreatedByID = token,
-                IsDeleted = false,
+                CreationDate = formattedDate,
+                CreatedByID = "a5b29797-d56c-45df-8cc4-d33db475edfb",
+                IsDeleted = true,
                 Price = it.aslPrice,
                 PriceLineID = it.aslPriceLine,
                 PromoPrice = 0.0,
                 Sum = it.aslSum,
                 SumWithDiscount = it.aslSum,
-                VATQuote = it.VATQuoti
+                VATQuote = it.VATQuoti,
+                DeletedByID = "00000000-0000-0000-0000-000000000000",
+                DeletionDate = "/Date(000000000000+0000)/"
             )
         }
         val paymentSales = listOf<PaymentSales>(
             PaymentSales(
-                CreationDate = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    LocalDateTime.now(ZoneId.systemDefault()).toString()
-                } else {
-                }.toString(),
+                CreationDate = formattedDate,
                 CreatedByID = token,
-                ID = number++.toString(),
-                PaymentTypeID = payment.toString(),
+                ID = "a5b29797-d56c-45df-8cc4-d33db475edfb",
+                PaymentTypeID = paymentName,
                 Sum = amount
             )
         )
         val bill = listOf<BillSales>(
             BillSales(
                 ClosedByID = token,
-                ClosingDate = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    LocalDateTime.now(ZoneId.systemDefault()).toString()
-                } else {
-                }.toString(),
-                CreationDate = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    LocalDateTime.now(ZoneId.systemDefault()).toString()
-                } else {
-                }.toString(),
-                ID = "",
+                ClosingDate = formattedDate,
+                CreationDate = formattedDate,
+                ID = "00000000-0000-0000-0000-000000000000",
                 Lines = lines,
                 Number = number++,
-                OpenedByID = token,
-                Payments = paymentSales
+                OpenedByID = "a5b29797-d56c-45df-8cc4-d33db475edfb",
+                Payments = paymentSales,
+                CardID = "00000000-0000-0000-0000-000000000000",
+                ClientID = "00000000-0000-0000-0000-000000000000"
             )
         )
         val saveBillSales = SaveBillSales(
             Bills = bill,
             Token = token,
-            ShiftID = "1",
+            ShiftID = "1627aea5-8e0a-4371-9022-9b504344e724",
             )
         return API.api.postBill(saveBillSales)
     }
