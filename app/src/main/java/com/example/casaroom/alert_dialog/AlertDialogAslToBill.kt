@@ -26,7 +26,8 @@ class AlertDialogAslToBill(private val context: Context) {
     val minusButton: ImageFilterView = dialogView.findViewById(R.id.imageMin)
     val price: TextView = dialogView.findViewById(R.id.tv_item_price)
 
-    fun onCloc(item: String, priceItem: Double, idAsl: String, tva: String, unit: String, context: Context) {
+    fun onCloc(item: String, priceItem: Double, idAsl: String, tva: String, unit: String, vatQuoti: Double,
+               priceLine: String, context: Context) {
         db = DataBaseRoom.getDB(context)
 
         alertDialog.setView(dialogView)
@@ -69,7 +70,10 @@ class AlertDialogAslToBill(private val context: Context) {
                     aslSum = sum,
                     aslunitCode = "",
                     aslVAT = tva.toString(),
-                    aslunitName = unit
+                    aslunitName = unit,
+                    VATQuoti = vatQuoti,
+                    aslPriceLine = priceLine
+
                 )
                 db.DaoBillList().insertBillList(billList)
             }

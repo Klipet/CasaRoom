@@ -7,5 +7,7 @@ data class RegisterFiscalReceipt(
     val HeaderText: String,
     val Lines: List<Line>,
     val Number: String,
-    val Payments: List<Payment>
+    val Payments: List<Payment>,
+    var ErrorCode: String,
+    var ErrorMessage: String
 )
