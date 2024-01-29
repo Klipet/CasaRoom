@@ -31,8 +31,6 @@ class AslModel(private val db: DataBaseRoom, private val context: Context):ViewM
     fun aslInsert(aslList: List<Assortment>){
         CoroutineScope(Dispatchers.IO).launch {
             try {
-
-
                 val barcodes = aslList?.map {
                     BarcodesDB(0, it.ID, it.Barcodes)
                     }
@@ -52,7 +50,7 @@ class AslModel(private val db: DataBaseRoom, private val context: Context):ViewM
                 Log.d("Error folder Insert", e.message.toString())
             }
             try {
-                _loadingState.postValue(true)
+                _loadingState.postValue(false)
                 val asortimentList = aslList.map {
                     val promo = it?.Promotions?.map {
                         PromoDB(

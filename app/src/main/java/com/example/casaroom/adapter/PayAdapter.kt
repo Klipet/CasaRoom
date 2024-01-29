@@ -93,7 +93,7 @@ class PayAdapter(private val payment: List<PaymentTypeDB>, private val amount: D
 
                    if (response.body()?.ErrorMessage.isNullOrEmpty()){
                        Toast.makeText(context," IS succesifull", Toast.LENGTH_LONG ).show()
-                       controlSaveBill(btpayment.Code.toString())
+                       controlSaveBill(btpayment.ExternalId)
                    }
                    else{
                        Toast.makeText(context, "Empty response body", Toast.LENGTH_LONG).show()

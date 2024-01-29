@@ -1,6 +1,7 @@
 package com.example.casaroom.clases
 
 import android.app.AlertDialog
+import android.content.Context
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -8,6 +9,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.Observer
+import com.example.casaroom.alert_dialog.OkDialog
 import com.example.casaroom.api.API
 import com.example.casaroom.constant.Constant
 import com.example.casaroom.databinding.ActivityStartBinding
@@ -39,27 +41,28 @@ class StartActivity : AppCompatActivity() {
         setContentView(binding.root)
         //setContentView(R.layout.activity_start)
         db = DataBaseRoom.getDB(applicationContext)
-        sh = getSharedPreferences("PREFERENSES", MODE_PRIVATE)
-        val login = binding.tvLogin.text
-        val password = binding.tvPassword.text
-        try {
-            binding.button.setOnClickListener {
+        sh = getSharedPreferences("PREFERENSES", Context.MODE_PRIVATE)
+        val login = binding.tvLogin.text.toString()
+        val password = binding.tvPassword.text.toString()
+        binding.button.setOnClickListener {
+            try {
                 insertToken(login.toString(), password.toString())
                 observLoadingState()
+            }catch (e: NullPointerException){
+                    Toast.makeText(applicationContext, e.toString(), Toast.LENGTH_LONG).show()
+            }catch (e: Exception){
+                    Toast.makeText(applicationContext, e.toString(), Toast.LENGTH_LONG).show()
             }
-        }catch (e: NullPointerException){
-            Toast.makeText(applicationContext, e.toString(), Toast.LENGTH_LONG).show()
-        }catch (e: Exception){
-            Toast.makeText(applicationContext, e.toString(), Toast.LENGTH_LONG).show()
         }
+
     }
 
     fun insertToken(login: String, password: String) {
-        val sheredPreference = getSharedPreferences("PREFERENSES", MODE_PRIVATE).edit()
+        val sheredPreference = getSharedPreferences("PREFERENSES", Context.MODE_PRIVATE).edit()
         try {
             CoroutineScope(Dispatchers.IO).launch{
-                sheredPreference.putString(Constant.LOGIN, login).apply()
-                sheredPreference.putString(Constant.PASS, password).apply()
+                sheredPreference.putString(Constant.LOGIN, login.toString()).apply()
+                sheredPreference.putString(Constant.PASS, password.toString()).apply()
                 val getToken = retrofitResponse.getTokenUser(login, password).execute()
                 if (getToken.isSuccessful){
                     val tokenUser = getToken.body()?.AuthentificateUserResult?.Token
@@ -84,12 +87,11 @@ class StartActivity : AppCompatActivity() {
 
     @OptIn(DelicateCoroutinesApi::class)
     fun getCashWork(){
-        val sheredPreferenceRet = getSharedPreferences("PREFERENSES", MODE_PRIVATE)
-        val token = sheredPreferenceRet.getString(Constant.TOKEN, errorShared)
+        val sheredPreferenceRet = getSharedPreferences("PREFERENSES", Context.MODE_PRIVATE)
+        val token = sheredPreferenceRet.getString(Constant.TOKEN, errorShared).toString()
         if (token != errorShared){
             GlobalScope.launch {
                 val casaReqest = retrofitResponse.getWorkPlace(token.toString()).GetWorkplacesResult
- //               val casa = casaReqest.body()!!.GetWorkplacesResult
                 val casaArr = casaReqest.Workplaces.map { it.Name }.toTypedArray()
                 val emptyTable = db.DaoCasa().getAllCasa()
                 if (emptyTable == null){
@@ -97,7 +99,9 @@ class StartActivity : AppCompatActivity() {
                         alertDialog(casaReqest, casaArr)
                     }
                 }else{
+                    getUser()
                     insertAslToDB()
+
                 }
 
             }
@@ -114,6 +118,7 @@ class StartActivity : AppCompatActivity() {
             val casaID = casa.Workplaces.get(switc)?.ID.toString()
             CoroutineScope(Dispatchers.IO).launch {
                 try {
+                    getUser()
                     vmCasa.casaToDB(casaID, casaName)
                     delay(1000)
                     insertAslToDB()
@@ -144,16 +149,36 @@ class StartActivity : AppCompatActivity() {
 
 
     }
+
+     suspend fun getUser(){
+         withContext(Dispatchers.IO) {
+             try {
+                 val token = sh.getString(Constant.TOKEN, errorShared)
+                 val login = sh.getString(Constant.LOGIN, errorShared)
+                 val casa = db.DaoCasa().getAllCasa().casaID
+                 val getUserResault = API.api.getUser(token.toString(), casa)
+                 val response = getUserResault.GetUsersListResult
+                 response.Users.find { it.UserName == login.toString()}?.let { userName ->
+                     withContext(Dispatchers.Main) {
+                         OkDialog(this@StartActivity).show()
+                     }
+                 }
+             } catch (e: Exception) {
+                 Log.d("Error User", e.message.toString())
+
+             }
+         }
+    }
     private fun observLoadingState(){
         vmAssortiment = AslModel(db, this)
-        binding.pbStart.visibility = View.VISIBLE
+        binding.pbStart.visibility = View.GONE
         binding.tvLogin.isEnabled = false
         binding.tvPassword.isEnabled = false
         binding.button.isEnabled = false
         vmAssortiment.loadingState.observe(this, Observer {isLoading ->
             if (isLoading) {
                 // Показать ProgressBar
-                binding.pbStart.visibility = View.VISIBLE
+                binding.pbStart.visibility = View.GONE
             } else {
                 // Скрыть ProgressBar
                 binding.pbStart.visibility = View.GONE
