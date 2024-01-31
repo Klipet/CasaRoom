@@ -2,10 +2,20 @@ package com.example.casaroom.modelsView
 
 import android.content.Context
 import android.content.Intent
+import android.os.Handler
 import android.util.Log
+
+import android.view.View
+import android.view.animation.Transformation
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.room.Query
+import com.airbnb.lottie.LottieAnimationView
+import com.airbnb.lottie.LottieDrawable
+import com.example.casaroom.alert_dialog.OkDialog
 import com.example.casaroom.clases.BonRegisterActivity
 import com.example.casaroom.db.assortiment.Assortment
 import com.example.casaroom.roomDB.DataBaseRoom
@@ -13,15 +23,27 @@ import com.example.casaroom.roomDB.assortiment.AsortimentDB
 import com.example.casaroom.roomDB.assortiment.BarcodesDB
 import com.example.casaroom.roomDB.assortiment.IsFolderDB
 import com.example.casaroom.roomDB.assortiment.PromoDB
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 
 
-class AslModel(private val db: DataBaseRoom, private val context: Context):ViewModel() {
-    private val _loadingState = MutableLiveData<Boolean>()
-    val loadingState: LiveData<Boolean>
-        get() = _loadingState
+class AslModel():ViewModel() {
+
+
+    fun aslInsert(aslList: List<Assortment>, db: DataBaseRoom, context: Context, lottieAnimationView: LottieAnimationView) {
+
+        CoroutineScope(Dispatchers.Main).launch{
+            lottieAnimationView.visibility = View.VISIBLE
+            lottieAnimationView.repeatCount = LottieDrawable.RESTART
+            lottieAnimationView.repeatMode = LottieDrawable.RESTART
+            lottieAnimationView.setMinProgress(0.00f)
+            lottieAnimationView.setMaxProgress(0.29f)
+        }
+
 
 
     fun aslInsert(aslList: List<Assortment>){
@@ -45,7 +67,6 @@ class AslModel(private val db: DataBaseRoom, private val context: Context):ViewM
                 Log.d("Error folder Insert", e.message.toString())
             }
             try {
-                _loadingState.postValue(false)
                 val asortimentList = aslList.map {
                     val promo = it?.Promotions?.map { promo ->
                         PromoDB(
@@ -87,6 +108,23 @@ class AslModel(private val db: DataBaseRoom, private val context: Context):ViewM
                     )
                 }
                 db.DaoAssortiment().insertAsl(asortimentList)
+            } catch (e: Exception) {
+
+                Log.d("ErrorAsortimentInsert and promo", e.message.toString())
+            } finally {
+                withContext(Dispatchers.Main) {
+                    lottieAnimationView.setMinProgress(0.29f)
+                    lottieAnimationView.setMaxProgress(1.0f)
+                    lottieAnimationView.playAnimation()
+                    delay(1000) // Пример: подождать 2 секунды
+                    val intent = Intent(context, BonRegisterActivity::class.java)
+                    context.startActivity(intent)
+                }
+
+            }
+        }
+    }
+
                 val intent = Intent(context, BonRegisterActivity::class.java)
                 context.startActivity(intent)
             } catch (e: Exception) {
@@ -96,4 +134,5 @@ class AslModel(private val db: DataBaseRoom, private val context: Context):ViewM
             }
         }
     }
+
 }

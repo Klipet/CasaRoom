@@ -6,11 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.GridLayoutManager
-import com.example.casaroom.R
-import com.example.casaroom.adapter.PayAdapter
-import com.example.casaroom.adapter.PayTypeButtonAdapter
 import com.example.casaroom.databinding.FragmentPaymentBinding
 import com.example.casaroom.modelsView.BillModel
 import com.example.casaroom.modelsView.SetingModel
@@ -21,7 +16,6 @@ import com.example.casaroom.roomDB.work_seting.PaymentTypeDB
 
 class PaymentFragment : Fragment() {
     private lateinit var bindungPayment: FragmentPaymentBinding
-    private lateinit var payAdapter: PayTypeButtonAdapter
     private lateinit var payModel: SetingModel
     private lateinit var db: DataBaseRoom
 
@@ -54,15 +48,6 @@ class PaymentFragment : Fragment() {
     fun cancelBT() {
         bindungPayment.btCancel.setOnClickListener {
             fragmentManager?.beginTransaction()?.remove(this)?.commit()
-        }
-    }
-    private fun payRecicler(){
-        payModel = SetingModel(db)
-        payAdapter = PayTypeButtonAdapter()
-        //   bindungPayment.rcPayTupe.layoutManager = GridLayoutManager(context, 4)
-        //   bindungPayment.rcPayTupe.adapter = payAdapter
-        getPayType {
-            payAdapter.submitList(it)
         }
     }
 
