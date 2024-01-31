@@ -25,8 +25,12 @@ import com.example.casaroom.modelsView.PostSalesBill
 import com.example.casaroom.roomDB.DataBaseRoom
 import com.example.casaroom.roomDB.bill.BillListDB
 import com.example.casaroom.roomDB.work_seting.PaymentTypeDB
+import com.google.gson.Gson
+import kotlinx.serialization.decodeFromString
 import retrofit2.Call
 import retrofit2.Callback
+import kotlinx.serialization.json.Json
+import okhttp3.OkHttp
 import retrofit2.Response
 
 class PayAdapter(private val payment: List<PaymentTypeDB>, private val amount: Double,
@@ -75,6 +79,8 @@ class PayAdapter(private val payment: List<PaymentTypeDB>, private val amount: D
                 )
             )
             val reqestBodyBill = RegisterFiscalReceipt(
+                ErrorCode = "",
+                ErrorMessage = "",
                 ClientEmail = "",
                 ClientPhone = "",
                 FooterText = "Thank you!",
@@ -85,7 +91,7 @@ class PayAdapter(private val payment: List<PaymentTypeDB>, private val amount: D
                 ErrorCode = "",
                 ErrorMessage = ""
             )
-
+            val json = Gson()
             val call = ApiFiscal.api.registerFiscalRecept(reqestBodyBill)
            call.enqueue(object : Callback<RegisterFiscalReceipt> {
                override fun onResponse(
@@ -97,8 +103,15 @@ class PayAdapter(private val payment: List<PaymentTypeDB>, private val amount: D
                        controlSaveBill(btpayment.ExternalId)
                    }
                    else{
+                   val errorBody = response.errorBody()?.string()
+                   //val mesageError = Json.decodeFromString<ResponseBill>(errorBody?:  "")
+                   //val errorCode = mesageError.ErrorCode
+                   if (response.body()?.ErrorMessage.isNullOrEmpty()){
+                       Toast.makeText(context," IS succesifull", Toast.LENGTH_LONG ).show()
+                       Log.d("Error body", response.body().toString())
+                   } else{
                        Toast.makeText(context, "Empty response body", Toast.LENGTH_LONG).show()
-                       val responsecode = response
+
                       // handleErrorResponse(errorCode, errorBody)
                    }
                }

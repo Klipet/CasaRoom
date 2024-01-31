@@ -4,11 +4,11 @@ import android.content.Context
 import android.content.Intent
 import android.os.Handler
 import android.util.Log
+
 import android.view.View
 import android.view.animation.Transformation
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -26,8 +26,10 @@ import com.example.casaroom.roomDB.assortiment.PromoDB
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+
+
 
 class AslModel():ViewModel() {
 
@@ -43,13 +45,14 @@ class AslModel():ViewModel() {
         }
 
 
-        CoroutineScope(Dispatchers.IO).launch {
+
+    fun aslInsert(aslList: List<Assortment>){
+        GlobalScope.launch {
             try {
                 val barcodes = aslList?.map {
                     BarcodesDB(0, it.ID, it.Barcodes)
                 }
                 barcodes?.let { db.DaoCBarcodes().insertBarcodes(it) }
-
             } catch (e: Exception) {
                 Log.d("Error Barcode Insert", e.message.toString())
             }
@@ -65,21 +68,20 @@ class AslModel():ViewModel() {
             }
             try {
                 val asortimentList = aslList.map {
-                    val promo = it?.Promotions?.map {
+                    val promo = it?.Promotions?.map { promo ->
                         PromoDB(
                             0,
-                            AllowDiscount = it.AllowDiscount,
-                            AslID = it.ID,
-                            EndDate = it.EndDate,
-                            IDPromo = it.ID,
-                            Price = it.Price,
-                            StartDate = it.StartDate,
-                            TimeBegin = it.TimeBegin,
-                            TimeEnd = it.TimeEnd
+                            AllowDiscount = promo.AllowDiscount,
+                            AslID = promo.ID,
+                            EndDate = promo.EndDate,
+                            IDPromo = promo.ID,
+                            Price = promo.Price,
+                            StartDate = promo.StartDate,
+                            TimeBegin = promo.TimeBegin,
+                            TimeEnd = promo.TimeEnd
                         )
                     }
-                    promo?.let { it1 -> db.DaoProm().insertPromo(it1) }
-
+                    promo?.let { promo -> db.DaoProm().insertPromo(promo) }
                     AsortimentDB(
                         AllowDiscounts = it.AllowDiscounts,
                         AllowNonInteger = it.AllowNonInteger,
@@ -123,5 +125,14 @@ class AslModel():ViewModel() {
         }
     }
 
+                val intent = Intent(context, BonRegisterActivity::class.java)
+                context.startActivity(intent)
+            } catch (e: Exception) {
+                Log.d("ErrorAsortimentInsert and promo", e.message.toString())
+            } finally {
+                _loadingState.postValue(false)
+            }
+        }
+    }
 
 }
