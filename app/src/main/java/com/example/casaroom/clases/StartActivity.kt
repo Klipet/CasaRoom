@@ -2,6 +2,7 @@ package com.example.casaroom.clases
 
 import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -9,6 +10,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.Observer
+import com.airbnb.lottie.LottieDrawable
 import com.example.casaroom.alert_dialog.OkDialog
 import com.example.casaroom.api.API
 import com.example.casaroom.constant.Constant
@@ -35,6 +37,8 @@ class StartActivity : AppCompatActivity() {
     private lateinit var vmCasa: CasaModel
     private lateinit var vmAssortiment: AslModel
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityStartBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
@@ -44,10 +48,14 @@ class StartActivity : AppCompatActivity() {
         sh = getSharedPreferences("PREFERENSES", Context.MODE_PRIVATE)
         val login = binding.tvLogin.text.toString()
         val password = binding.tvPassword.text.toString()
+        val lottiAnim = binding.lottyImage
         binding.button.setOnClickListener {
             try {
                 insertToken(login.toString(), password.toString())
                 observLoadingState()
+                binding.tvLogin.isEnabled = false
+                binding.tvPassword.isEnabled = false
+                binding.button.isEnabled = false
             }catch (e: NullPointerException){
                     Toast.makeText(applicationContext, e.toString(), Toast.LENGTH_LONG).show()
             }catch (e: Exception){
@@ -131,19 +139,21 @@ class StartActivity : AppCompatActivity() {
     }
 
     suspend fun insertAslToDB(){
+        val imgLotti = binding.lottyImage
         var dataAveibl = false
-        vmAssortiment = AslModel(db, this)
+        vmAssortiment = AslModel()
         val token =  sh.getString(Constant.TOKEN, errorShared)
         while (!dataAveibl){
             val casa = db.DaoCasa().getAllCasa()
             dataAveibl = casa != null && casa.casaID.isNotEmpty()
             val casaID = casa.casaID
-            GlobalScope.launch {
+            CoroutineScope(Dispatchers.IO).launch {
                 val aslResponse = API.api.getAslWP(token.toString(), casaID).Assortments
-                vmAssortiment.aslInsert(aslResponse)
+                vmAssortiment.aslInsert(aslResponse, db, this@StartActivity, imgLotti)
             }
             if (!dataAveibl){
                 delay(1000)
+                return
             }
         }
 
@@ -160,7 +170,7 @@ class StartActivity : AppCompatActivity() {
                  val response = getUserResault.GetUsersListResult
                  response.Users.find { it.UserName == login.toString()}?.let { userName ->
                      withContext(Dispatchers.Main) {
-                         OkDialog(this@StartActivity).show()
+
                      }
                  }
              } catch (e: Exception) {
@@ -170,20 +180,10 @@ class StartActivity : AppCompatActivity() {
          }
     }
     private fun observLoadingState(){
-        vmAssortiment = AslModel(db, this)
-        binding.pbStart.visibility = View.GONE
         binding.tvLogin.isEnabled = false
         binding.tvPassword.isEnabled = false
         binding.button.isEnabled = false
-        vmAssortiment.loadingState.observe(this, Observer {isLoading ->
-            if (isLoading) {
-                // Показать ProgressBar
-                binding.pbStart.visibility = View.GONE
-            } else {
-                // Скрыть ProgressBar
-                binding.pbStart.visibility = View.GONE
-            }
-
-        })
     }
+
+
 }

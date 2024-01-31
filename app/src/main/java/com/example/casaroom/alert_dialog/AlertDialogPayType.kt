@@ -5,28 +5,23 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.text.Editable
 import android.text.InputFilter
+import android.text.InputType
 import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
-import android.widget.Toast
-import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.casaroom.R
 import com.example.casaroom.adapter.PayAdapter
-import com.example.casaroom.adapter.PayTypeButtonAdapter
-import com.example.casaroom.api.ApiFiscal
-import com.example.casaroom.api.RetrofitApiFiscal
 import com.example.casaroom.roomDB.bill.BillListDB
 import com.example.casaroom.roomDB.work_seting.PaymentTypeDB
 import kotlin.math.abs
 
 
 class AlertDialogPayType(private val context: Context, private val sh: SharedPreferences){
-    private lateinit var payButton: PayTypeButtonAdapter
     private var paymentEnteredListener: PaymentListener? = null
 
     val alertDialogPay: AlertDialog
@@ -36,7 +31,9 @@ class AlertDialogPayType(private val context: Context, private val sh: SharedPre
     val ostSdac: TextView = dialigViewPay.findViewById(R.id.tvSdacea)
     val inputSum: EditText = dialigViewPay.findViewById(R.id.edInployted)
     val recyclerPay = dialigViewPay.findViewById<RecyclerView>(R.id.rcPayTupe)
-    val respProgres = dialigViewPay.findViewById<ProgressBar>(R.id.pbpayResp)
+    val progressBar = dialigViewPay.findViewById<ProgressBar>(R.id.progress)
+    // Set input type to numeric with optional decimal
+
     init {
         alertDialogPay = AlertDialog.Builder(context)
             .setView(dialigViewPay)
@@ -50,6 +47,7 @@ class AlertDialogPayType(private val context: Context, private val sh: SharedPre
             sum.text = totalPayment.toString()
             sumRest.text = restDefault
             inputSum.hint = totalPayment.toString()
+            inputSum.setInputType(InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL)
             inputSum.addTextChangedListener(object : TextWatcher{
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                     val decimalDigitsInputFilter = InputFilter { source, _, _, dest, dstart, dend ->
@@ -65,12 +63,12 @@ class AlertDialogPayType(private val context: Context, private val sh: SharedPre
                     val inputLength = p0?.toString()
                     if(inputLength.isNullOrEmpty()){
                         inputSum.setSelection(restDefault.toInt())
-                        sumRest.text = totalPayment.toString()
+                        sumRest.text = totalPayment.toString().format("%.2f")
                         val amount = p0?.toString()?.toDoubleOrNull() ?: 0.0
                         paymentEnteredListener?.onPaymentDetailsEntered(amount)
                     }else{
                         val rest = totalPayment - inputLength!!.toDouble()
-                        sumRest.text = rest.toString()
+                        sumRest.text = rest.toString().format("%.2f")
                         paymentEnteredListener?.onPaymentDetailsEntered(totalPayment)
                         if (rest < 0){
                             ostSdac.text = "Сдачя"
@@ -89,7 +87,7 @@ class AlertDialogPayType(private val context: Context, private val sh: SharedPre
                 override fun afterTextChanged(p0: Editable?) {
                 }
             })
-            val paymentTypesAdapter = PayAdapter(paymentTypes, totalPayment,asl,  context, alertDialogPay, respProgres, sh)
+            val paymentTypesAdapter = PayAdapter(paymentTypes, totalPayment,asl,  context, alertDialogPay ,progressBar,  sh)
             recyclerPay.layoutManager = GridLayoutManager(context, 4)
             recyclerPay.adapter = paymentTypesAdapter
 

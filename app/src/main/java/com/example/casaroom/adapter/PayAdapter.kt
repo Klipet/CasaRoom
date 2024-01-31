@@ -13,6 +13,7 @@ import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
+import com.airbnb.lottie.LottieAnimationView
 import com.example.casaroom.R
 import com.example.casaroom.api.ApiFiscal
 import com.example.casaroom.db.post_fiscal_service.Line
@@ -29,8 +30,8 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class PayAdapter(private val payment: List<PaymentTypeDB>, private val amount: Double,
-                 private val bill: List<BillListDB>, private val context: Context, private  val dialog: AlertDialog,
-    private val progressBar: ProgressBar, private val sharedPreferences: SharedPreferences)
+                 private val bill: List<BillListDB>, private val context: Context, private  val dialog: AlertDialog, private val progressBar: ProgressBar,
+     private val sharedPreferences: SharedPreferences)
     : RecyclerView.Adapter<PayAdapter.Holder>() {
     private lateinit var db: DataBaseRoom
     private lateinit var billModel: BillModel
@@ -89,7 +90,7 @@ class PayAdapter(private val payment: List<PaymentTypeDB>, private val amount: D
            call.enqueue(object : Callback<RegisterFiscalReceipt> {
                override fun onResponse(
                    call: Call<RegisterFiscalReceipt>, response: Response<RegisterFiscalReceipt>) {
-                   progressBar.visibility = View.GONE
+               //    lottiImage.visibility = View.VISIBLE
 
                    if (response.body()?.ErrorMessage.isNullOrEmpty()){
                        Toast.makeText(context," IS succesifull", Toast.LENGTH_LONG ).show()
@@ -122,7 +123,9 @@ class PayAdapter(private val payment: List<PaymentTypeDB>, private val amount: D
         val saveBillSales = billSave.postBillModel()
         saveBillSales.enqueue(object : Callback<SaveBillSales>{
             override fun onResponse(call: Call<SaveBillSales>, response: Response<SaveBillSales>) {
+                val responses = response.body()
                 if (response.isSuccessful){
+                    progressBar.visibility = View.GONE
                     billModel = BillModel(db)
                     billModel.deleteBill()
                     dialog.dismiss()
